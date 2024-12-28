@@ -1,4 +1,4 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.*;
 public record Sphere(Vector center,double radius,Color color,double brightness,Material material) implements Hittable{

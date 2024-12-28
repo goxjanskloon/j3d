@@ -1,4 +1,4 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import io.goxjanskloon.utils.*;
 public record Aabb(Interval x,Interval y,Interval z){
     public static final Aabb empty=new Aabb(Interval.EMPTY,Interval.EMPTY,Interval.EMPTY);

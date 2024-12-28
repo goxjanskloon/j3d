@@ -1,4 +1,4 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.*;
 public interface Hittable{

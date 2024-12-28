@@ -1,4 +1,4 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import java.util.concurrent.*;
 public record Vector(double x,double y,double z){
     public double get(Dimension d){

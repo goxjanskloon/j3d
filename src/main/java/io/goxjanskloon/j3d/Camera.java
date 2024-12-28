@@ -1,10 +1,10 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import org.apache.log4j.*;
 import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.*;
-public class Camera{
+public final class Camera{
     public static final Interval HIT_RANGE=new Interval(1e-5,Double.POSITIVE_INFINITY);
     public static final Vector Y_POSITIVE=new Vector(0,1,0);
     private static final Logger logger=Logger.getLogger(Camera.class);

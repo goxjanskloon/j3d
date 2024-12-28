@@ -1,8 +1,8 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import org.junit.jupiter.api.*;
 import io.goxjanskloon.utils.*;
 import static org.junit.jupiter.api.Assertions.*;
-class AabbTest{
+public final class AabbTest{
     @Test void get(){
         Aabb aabb=new Aabb(new Interval(0,1),new Interval(2,3),new Interval(4,5));
         assertEquals(0,aabb.get(Dimension.X).min());

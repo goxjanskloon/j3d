@@ -1,4 +1,4 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 public enum Dimension{
     X,Y,Z;
     Dimension(){}

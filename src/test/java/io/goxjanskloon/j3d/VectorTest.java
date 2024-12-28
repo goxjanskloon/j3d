@@ -1,7 +1,7 @@
-package io.goxjanskloon.v3d;
+package io.goxjanskloon.j3d;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-class VectorTest{
+public final class VectorTest{
     @Test void get(){
         Vector v=new Vector(1,2,3);
         assertEquals(1,v.get(Dimension.X));

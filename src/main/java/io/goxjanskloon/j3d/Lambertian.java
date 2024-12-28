@@ -1,5 +1,5 @@
-package io.goxjanskloon.v3d;
-public class Lambertian implements Material{
+package io.goxjanskloon.j3d;
+public final class Lambertian implements Material{
     @Override public double getPossibility(Vector theoretic,Vector real){
         return 1;
     }
