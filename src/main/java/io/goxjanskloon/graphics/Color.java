@@ -1,14 +1,14 @@
 package io.goxjanskloon.graphics;
 import io.goxjanskloon.utils.Interval;
-public class Color{
+public record Color(double red,double green,double blue){
     public static final Interval RANGE=new Interval(0,1);
-    public static final Color WHITE=new Color(1,1,1),BLACK=new Color(0,0,0),RED=new Color(1,0,0),GREEN=new Color(0,1,0),BLUE=new Color(0,0,1),YELLOW=new Color(1,1,0),CYAN=new Color(0,1,1);
-    public final double red,green,blue;
-    public Color(double red,double green,double blue){
-        this.red=red;
-        this.green=green;
-        this.blue=blue;
-    }
+    public static final Color WHITE=new Color(1,1,1);
+    public static final Color BLACK=new Color(0,0,0);
+    public static final Color RED=new Color(1,0,0);
+    public static final Color GREEN=new Color(0,1,0);
+    public static final Color BLUE=new Color(0,0,1);
+    public static final Color YELLOW=new Color(1,1,0);
+    public static final Color CYAN=new Color(0,1,1);
     public Color mix(Color other){
         return new Color(red+other.red,green+other.green,blue+other.blue);
     }

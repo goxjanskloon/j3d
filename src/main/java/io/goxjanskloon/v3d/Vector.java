@@ -1,20 +1,11 @@
 package io.goxjanskloon.v3d;
 import java.util.concurrent.*;
-public class Vector{
-    public final double x,y,z;
-    public Vector(double x, double y, double z){
-        this.x=x;
-        this.y=y;
-        this.z=z;
-    }
+public record Vector(double x,double y,double z){
     public double get(Dimension d){
         return switch(d){
-            case X->
-                    x;
-            case Y->
-                    y;
-            case Z->
-                    z;
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
         };
     }
     public double dot(Vector v){
@@ -54,7 +45,7 @@ public class Vector{
         return div(norm());
     }
     public Vector rotate(Ray axis,double angle){
-        return this.sub(axis.orig).rotate(axis.dir,angle).add(axis.orig);
+        return this.sub(axis.orig()).rotate(axis.dir(),angle).add(axis.orig());
     }
     public Vector rotate(Vector axis,double angle){
         final double cos=Math.cos(angle);

@@ -11,40 +11,20 @@ public class Camera{
     static{
         PropertyConfigurator.configure(Camera.class.getClassLoader().getResourceAsStream("log4j.properties"));
     }
-    public Hittable world;
-    public Ray ray;
-    private Vector upDir,rightDir;
-    private double upAngle;
-    private int width,height,halfWidth,halfHeight,dWidth;
-    public int maxDepth,samplesPerPixel;
+    public final Hittable world;
+    public final Ray ray;
+    public final Vector upDir,rightDir;
+    public final int width,height,maxDepth,samplesPerPixel,dWidth;
     public Color backgroundLight;
+    private final int halfWidth,halfHeight;
     private final ExecutorService threadPool;
-    public double getUpAngle(){
-        return upAngle;
-    }
-    public void setUpAngle(double upAngle){
-        this.upAngle=upAngle;
-        upDir=ray.dir.cross(Y_POSITIVE).unit().rotate(ray.dir.unit(),upAngle);
-        rightDir=upDir.rotate(ray.dir.unit(),-Math.PI/2);
-    }
-    public int getWidth(){
-        return width;
-    }
-    public int getHeight(){
-        return height;
-    }
-    public void setWidth(int width){
-        halfWidth=(this.width=width)>>1;
-    }
-    public void setHeight(int height){
-        halfHeight=(this.height=height)>>1;
-    }
     public Camera(Hittable world,Ray ray,double upAngle,int width,int height,int maxDepth,int samplesPerPixel,Color backgroundLight,int dWidth){
         this.world=world;
         this.ray=ray;
-        setUpAngle(upAngle);
-        setWidth(width);
-        setHeight(height);
+        upDir=ray.dir().cross(Y_POSITIVE).unit().rotate(ray.dir().unit(),upAngle);
+        rightDir=upDir.rotate(ray.dir().unit(),-Math.PI/2);
+        halfWidth=(this.width=width)>>1;
+        halfHeight=(this.height=height)>>1;
         this.maxDepth=maxDepth;
         this.samplesPerPixel=samplesPerPixel;
         this.backgroundLight=backgroundLight;
@@ -58,15 +38,15 @@ public class Camera{
             if(depth==1) return Color.BLACK;
             return backgroundLight;
         }
-        if(depth==maxDepth) return record.color.scale(record.brightness);
-        Vector reflectDir=ray.dir.sub(record.normal.mul(ray.dir.dot(record.normal)*2)).unit();
-        Vector fuzzedReflectDir=record.material.generate(record.normal,reflectDir);
-        return render(new Ray(record.point,fuzzedReflectDir),depth+1).div(record.material.getPossibility(reflectDir,fuzzedReflectDir)).scale(record.color).mix(record.color.scale(record.brightness));
+        if(depth==maxDepth) return record.color().scale(record.brightness());
+        Vector reflectDir=ray.dir().sub(record.normal().mul(ray.dir().dot(record.normal())*2)).unit();
+        Vector fuzzedReflectDir=record.material().generate(record.normal(),reflectDir);
+        return render(new Ray(record.point(),fuzzedReflectDir),depth+1).div(record.material().getPossibility(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;
         for(int i=0;i<samplesPerPixel;++i){
-            Color sample=render(new Ray(ray.orig,(ray.dir.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
+            Color sample=render(new Ray(ray.orig(),(ray.dir().add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
             if(sample.isValid())
                 s=s.mix(sample);
         }
@@ -94,7 +74,7 @@ public class Camera{
         AtomicInteger total=new AtomicInteger();
         for(int i=0;i<width;i+=dWidth){
             total.incrementAndGet();
-            threadPool.execute(new renderRunnable(i,image.pixels,total));
+            threadPool.execute(new renderRunnable(i,image.pixels(),total));
             logger.log(Level.INFO,"Thread "+i/dWidth+" submitted.");
         }
         try{

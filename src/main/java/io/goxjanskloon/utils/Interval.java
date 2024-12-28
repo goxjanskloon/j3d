@@ -1,11 +1,8 @@
 package io.goxjanskloon.utils;
-public class Interval{
-    public static final Interval EMPTY=new Interval(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY),UNIVERSE=new Interval(Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY),UNIT_RANGE=new Interval(-0.5,0.5);
-    public final double min,max;
-    public Interval(double min,double max){
-        this.min=min;
-        this.max=max;
-    }
+public record Interval(double min,double max){
+    public static final Interval EMPTY=new Interval(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY);
+    public static final Interval UNIVERSE=new Interval(Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
+    public static final Interval UNIT_RANGE=new Interval(-0.5,0.5);
     public double length(){
         return max-min;
     }
@@ -27,7 +24,7 @@ public class Interval{
     public double random(){
         return Randoms.nextDouble(this);
     }
-    public Interval move(double x){
-        return new Interval(min+x,max+x);
+    public Interval move(double a){
+        return new Interval(min+a,max+a);
     }
 }

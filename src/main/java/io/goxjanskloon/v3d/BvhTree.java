@@ -33,6 +33,6 @@ public class BvhTree implements Hittable{
         HitRecord leftHit=left==null?null:left.hit(ray,interval),rightHit=right==null?null:right.hit(ray,interval);
         if(leftHit==null) return rightHit;
         if(rightHit==null) return leftHit;
-        return leftHit.dist<rightHit.dist?leftHit:rightHit;
+        return leftHit.dist()<rightHit.dist()?leftHit:rightHit;
     }
 }

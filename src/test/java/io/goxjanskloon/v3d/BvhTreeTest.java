@@ -4,19 +4,20 @@ import io.goxjanskloon.utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 public class BvhTreeTest{
-    private final ArrayList<Hittable> hittables;
+    private final ArrayList<Hittable> objects;
     private final BvhTree bvhTree;
     public BvhTreeTest(){
-        hittables=new ArrayList<>();
-        hittables.add(new Sphere(new Vector(0,2,0),1,null,0,null));
-        hittables.add(new Sphere(new Vector(0,-2,0),1,null,0,null));
-        hittables.add(new Sphere(new Vector(2,0,0),1,null,0,null));
-        hittables.add(new Sphere(new Vector(-2,0,0),1,null,0,null));
-        bvhTree=new BvhTree(hittables);
+        objects=new ArrayList<>();
+        objects.add(new Sphere(new Vector(0,2,0),1,null,0,null));
+        objects.add(new Sphere(new Vector(0,-2,0),1,null,0,null));
+        objects.add(new Sphere(new Vector(2,0,0),1,null,0,null));
+        objects.add(new Sphere(new Vector(-2,0,0),1,null,0,null));
+        bvhTree=new BvhTree(objects);
     }
     @Test public void hit(){
-        assertNotNull(hittables.getFirst().hit(new Ray(new Vector(0,0,-1),new Vector(0,1.5,0)),Interval.UNIVERSE));
-        assertNotNull(bvhTree.hit(new Ray(new Vector(0,0,-1),new Vector(0,1.5,0)),Interval.UNIVERSE));
+        final Ray r1=new Ray(new Vector(0,0,-1),new Vector(0,1.5,0));
+        assertNotNull(objects.getFirst().hit(r1,Interval.UNIVERSE));
+        assertNotNull(bvhTree.hit(r1,Interval.UNIVERSE));
         assertNotNull(bvhTree.hit(new Ray(new Vector(0,0,-1),new Vector(0,-1.5,0)),Interval.UNIVERSE));
         assertNotNull(bvhTree.hit(new Ray(new Vector(0,0,-1),new Vector(1.5,0,0)),Interval.UNIVERSE));
         assertNotNull(bvhTree.hit(new Ray(new Vector(0,0,-1),new Vector(-1.5,0,0)),Interval.UNIVERSE));

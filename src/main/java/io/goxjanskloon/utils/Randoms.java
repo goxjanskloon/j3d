@@ -8,6 +8,6 @@ public class Randoms{
         return min+nextDouble()*(max-min);
     }
     public static double nextDouble(Interval interval){
-        return nextDouble(interval.min,interval.max);
+        return nextDouble(interval.min(),interval.max());
     }
 }
