@@ -6,7 +6,6 @@ import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.*;
 public final class Camera{
     public static final Interval HIT_RANGE=new Interval(1e-5,Double.POSITIVE_INFINITY);
-    public static final Vector Y_POSITIVE=new Vector(0,1,0);
     private static final Logger logger=Logger.getLogger(Camera.class);
     static{
         PropertyConfigurator.configure(Camera.class.getClassLoader().getResourceAsStream("log4j.properties"));
@@ -18,11 +17,11 @@ public final class Camera{
     public Color backgroundLight;
     private final int halfWidth,halfHeight;
     private final ExecutorService threadPool;
-    public Camera(Hittable world,Ray ray,double upAngle,int width,int height,int maxDepth,int samplesPerPixel,Color backgroundLight,int dWidth){
+    public Camera(Hittable world,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color backgroundLight,int dWidth){
         this.world=world;
         this.ray=ray;
-        upDir=ray.dir().cross(Y_POSITIVE).unit().rotate(ray.dir().unit(),upAngle);
-        rightDir=upDir.rotate(ray.dir().unit(),-Math.PI/2);
+        this.upDir=upDir;
+        this.rightDir=rightDir;
         halfWidth=(this.width=width)>>1;
         halfHeight=(this.height=height)>>1;
         this.maxDepth=maxDepth;

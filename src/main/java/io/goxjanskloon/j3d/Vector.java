@@ -1,5 +1,5 @@
 package io.goxjanskloon.j3d;
-import java.util.concurrent.*;
+import io.goxjanskloon.utils.Randoms;
 public record Vector(double x,double y,double z){
     public double get(Dimension d){
         return switch(d){
@@ -52,7 +52,7 @@ public record Vector(double x,double y,double z){
         return mul(cos).add(axis.mul(1-cos).mul(dot(axis))).add(axis.cross(this).mul(Math.sin(angle)));
     }
     public static Vector random(){
-        return new Vector(ThreadLocalRandom.current().nextDouble(-1,1),ThreadLocalRandom.current().nextDouble(-1,1),ThreadLocalRandom.current().nextDouble(-1,1));
+        return new Vector(Randoms.nextDouble(-1,1),Randoms.nextDouble(-1,1),Randoms.nextDouble(-1,1));
     }
     public static Vector randomUnit(){
         while(true){
