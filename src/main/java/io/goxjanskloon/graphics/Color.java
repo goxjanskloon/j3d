@@ -21,16 +21,11 @@ public record Color(double red,double green,double blue){
     public Color div(double scale){
         return new Color(red/scale,green/scale,blue/scale);
     }
-    public Color gamma(){
-        return new Color(red<0?0:Math.sqrt(red),green<0?0:Math.sqrt(green),blue<0?0:Math.sqrt(blue));
-    }
     public Rgb toRgb(){
-        Color c=gamma();
-        c=new Color(RANGE.clamp(c.red),RANGE.clamp(c.green),RANGE.clamp(c.blue));
-        c=c.scale(Rgb.MAX);
+        final Color c=new Color(RANGE.clamp(red),RANGE.clamp(green),RANGE.clamp(blue)).scale(Rgb.MAX);
         return new Rgb((int)c.red,(int)c.green,(int)c.blue);
     }
     public boolean isValid(){
-        return Double.isFinite(red)&&Double.isFinite(green)&&Double.isFinite(blue);
+        return Double.isFinite(red)&&red>=0&&Double.isFinite(green)&&green>=0&&Double.isFinite(blue)&&blue>=0;
     }
 }

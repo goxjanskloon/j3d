@@ -1,7 +1,7 @@
 package io.goxjanskloon.j3d;
-public final class Lambertian implements Material{
-    @Override public double getPdfValue(Vector theoretic,Vector real){
-        return 1/(2*Math.PI);
+public final class Lambertian implements Brdf{
+    @Override public double getValue(Vector normal,Vector reflectDir){
+        return reflectDir.dot(normal)/Math.PI;
     }
     @Override public Vector generate(Vector normal,Vector theoretic){
         return Vector.randomOnHemisphere(normal);

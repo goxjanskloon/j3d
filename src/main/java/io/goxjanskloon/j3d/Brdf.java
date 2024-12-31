@@ -1,5 +1,5 @@
 package io.goxjanskloon.j3d;
-public interface Material{
-    double getPdfValue(Vector theoretic,Vector real);
+public interface Brdf{
+    double getValue(Vector normal,Vector reflectDir);
     Vector generate(Vector normal,Vector theoretic);
 }

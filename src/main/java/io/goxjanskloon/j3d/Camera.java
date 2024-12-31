@@ -39,13 +39,13 @@ public final class Camera{
         }
         if(depth==maxDepth) return record.color().scale(record.brightness());
         Vector reflectDir=ray.dir().sub(record.normal().mul(ray.dir().dot(record.normal())*2)).unit();
-        Vector fuzzedReflectDir=record.material().generate(record.normal(),reflectDir);
-        return render(new Ray(record.point(),fuzzedReflectDir),depth+1).scale(2*Math.PI*fuzzedReflectDir.cross(record.normal()).norm()/record.material().getPdfValue(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
+        Vector fuzzedReflectDir=record.brdf().generate(record.normal(),reflectDir);
+        return render(new Ray(record.point(),fuzzedReflectDir),depth+1).scale(record.brdf().getValue(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;
         for(int i=0;i<samplesPerPixel;++i){
-            Color sample=render(new Ray(ray.orig(),(ray.dir().add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
+            final Color sample=render(new Ray(ray.orig(),(ray.dir().add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
             if(sample.isValid())
                 s=s.mix(sample);
         }
@@ -64,7 +64,7 @@ public final class Camera{
             for(int i=0;i<height;++i)
                 for(int j=l;j<r;++j)
                     p[i][j]=render(j,i).toRgb();
-            int remain=total.decrementAndGet();
+            final int remain=total.decrementAndGet();
             logger.log(Level.INFO,"Thread "+l/dWidth+" finished,"+remain+" thread"+(remain>1?"s":"")+" left.");
         }
     }
