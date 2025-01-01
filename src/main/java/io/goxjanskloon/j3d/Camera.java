@@ -40,7 +40,7 @@ public final class Camera{
         if(depth==maxDepth) return record.color().scale(record.brightness());
         Vector reflectDir=ray.dir().sub(record.normal().mul(ray.dir().dot(record.normal())*2)).unit();
         Vector fuzzedReflectDir=record.brdf().generate(record.normal(),reflectDir);
-        return render(new Ray(record.point(),fuzzedReflectDir),depth+1).scale(record.brdf().getValue(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
+        return fuzzedReflectDir==null?record.color().scale(record.brightness()):render(new Ray(record.point(),fuzzedReflectDir),depth+1).scale(record.brdf().getValue(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;

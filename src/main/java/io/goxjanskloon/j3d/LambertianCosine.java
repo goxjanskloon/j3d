@@ -1,5 +1,5 @@
 package io.goxjanskloon.j3d;
-public final class Lambertian implements Brdf{
+public final class LambertianCosine implements Brdf{
     @Override public double getValue(Vector normal,Vector reflectDir){
         return reflectDir.dot(normal)/Math.PI;
     }
