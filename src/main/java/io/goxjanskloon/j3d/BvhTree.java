@@ -1,7 +1,7 @@
 package io.goxjanskloon.j3d;
 import java.util.*;
 import io.goxjanskloon.utils.*;
-public final class BvhTree implements Hittable{
+public class BvhTree implements Hittable{
     public final Hittable left,right;
     public final Aabb aabb;
     public BvhTree(List<Hittable> objects){

@@ -1,5 +1,5 @@
 package io.goxjanskloon.j3d;
-public final class Mirror implements Brdf{
+public class Mirror implements Brdf{
     @Override public double getValue(Vector normal,Vector reflectDir){
         return normal==reflectDir?1:0;
     }

@@ -2,12 +2,12 @@ package io.goxjanskloon.j3d;
 import org.junit.jupiter.api.*;
 import io.goxjanskloon.utils.*;
 import static org.junit.jupiter.api.Assertions.*;
-public final class AabbTest{
+public class AabbTest{
     @Test void get(){
         Aabb aabb=new Aabb(new Interval(0,1),new Interval(2,3),new Interval(4,5));
-        assertEquals(0,aabb.get(Dimension.X).min());
-        assertEquals(2,aabb.get(Dimension.Y).min());
-        assertEquals(4,aabb.get(Dimension.Z).min());
+        assertEquals(0,aabb.get(Dimension.X).min);
+        assertEquals(2,aabb.get(Dimension.Y).min);
+        assertEquals(4,aabb.get(Dimension.Z).min);
     }
     @Test void getLongestAxis(){
         Aabb a=new Aabb(new Interval(0,1),new Interval(2,4),new Interval(5,8)),b=new Aabb(new Interval(0,1),new Interval(2,5),new Interval(6,8)),c=new Aabb(new Interval(0,3),new Interval(4,5),new Interval(6,8));
@@ -27,12 +27,12 @@ public final class AabbTest{
     @Test void unite(){
         Aabb a=new Aabb(new Interval(0,1),new Interval(2,4),new Interval(5,8)),b=new Aabb(new Interval(0,1),new Interval(2,5),new Interval(6,8)),c=new Aabb(new Interval(0,3),new Interval(4,5),new Interval(6,8));
         Aabb d=a.unite(b).unite(c);
-        assertEquals(0,d.x().min());
-        assertEquals(3,d.x().max());
-        assertEquals(2,d.y().min());
-        assertEquals(5,d.y().max());
-        assertEquals(5,d.z().min());
-        assertEquals(8,d.z().max());
+        assertEquals(0,d.x.min);
+        assertEquals(3,d.x.max);
+        assertEquals(2,d.y.min);
+        assertEquals(5,d.y.max);
+        assertEquals(5,d.z.min);
+        assertEquals(8,d.z.max);
     }
     @Test void compareTo(){
         Aabb a=new Aabb(new Interval(0,1),new Interval(2,4),new Interval(5,8)),b=new Aabb(new Interval(0,1),new Interval(2,5),new Interval(6,8)),c=new Aabb(new Interval(0,3),new Interval(4,5),new Interval(6,8));

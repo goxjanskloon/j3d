@@ -3,7 +3,7 @@ import org.junit.jupiter.api.*;
 import io.goxjanskloon.utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
-public final class BvhTreeTest{
+public class BvhTreeTest{
     private final ArrayList<Hittable> objects;
     private final BvhTree bvhTree;
     public BvhTreeTest(){

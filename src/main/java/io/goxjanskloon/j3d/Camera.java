@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.*;
 import org.apache.log4j.*;
 import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.*;
-public final class Camera{
+public class Camera{
     public static final Interval HIT_RANGE=new Interval(1e-5,Double.POSITIVE_INFINITY);
     private static final Logger logger=Logger.getLogger(Camera.class);
     static{
@@ -38,14 +38,14 @@ public final class Camera{
             return backgroundLight;
         }
         if(depth==maxDepth) return record.color().scale(record.brightness());
-        Vector reflectDir=ray.dir().sub(record.normal().mul(ray.dir().dot(record.normal())*2)).unit();
+        Vector reflectDir=ray.direction.sub(record.normal().mul(ray.direction.dot(record.normal())*2)).unit();
         Vector fuzzedReflectDir=record.brdf().generate(record.normal(),reflectDir);
         return fuzzedReflectDir==null?record.color().scale(record.brightness()):render(new Ray(record.point(),fuzzedReflectDir),depth+1).scale(record.brdf().getValue(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;
         for(int i=0;i<samplesPerPixel;++i){
-            final Color sample=render(new Ray(ray.orig(),(ray.dir().add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
+            final Color sample=render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
             if(sample.isValid())
                 s=s.mix(sample);
         }
@@ -73,7 +73,7 @@ public final class Camera{
         AtomicInteger total=new AtomicInteger();
         for(int i=0;i<width;i+=dWidth){
             total.incrementAndGet();
-            threadPool.execute(new renderRunnable(i,image.pixels(),total));
+            threadPool.execute(new renderRunnable(i,image.pixels,total));
             logger.log(Level.INFO,"Thread "+i/dWidth+" submitted.");
         }
         try{

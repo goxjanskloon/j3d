@@ -1,6 +1,11 @@
 package io.goxjanskloon.j3d;
-public record Ray(Vector orig,Vector dir){
+public class Ray{
+    public final Vector origin,direction;
+    public Ray(Vector origin,Vector direction){
+        this.origin=origin;
+        this.direction=direction;
+    }
     public Vector at(double t){
-        return orig.add(dir.mul(t));
+        return origin.add(direction.mul(t));
     }
 }

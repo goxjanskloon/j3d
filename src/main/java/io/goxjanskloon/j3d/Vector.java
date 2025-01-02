@@ -1,6 +1,12 @@
 package io.goxjanskloon.j3d;
-import io.goxjanskloon.utils.Randoms;
-public record Vector(double x,double y,double z){
+import io.goxjanskloon.utils.*;
+public class Vector{
+    public final double x,y,z;
+    public Vector(double x,double y,double z){
+        this.x=x;
+        this.y=y;
+        this.z=z;
+    }
     public double get(Dimension d){
         return switch(d){
             case X -> x;
@@ -45,27 +51,24 @@ public record Vector(double x,double y,double z){
         return div(norm());
     }
     public Vector rotate(Ray axis,double angle){
-        return this.sub(axis.orig()).rotate(axis.dir(),angle).add(axis.orig());
+        return sub(axis.origin).rotate(axis.direction,angle).add(axis.origin);
     }
     public Vector rotate(Vector axis,double angle){
         final double cos=Math.cos(angle);
         return mul(cos).add(axis.mul(1-cos).mul(dot(axis))).add(axis.cross(this).mul(Math.sin(angle)));
     }
-    public static Vector random(){
-        return new Vector(Randoms.nextDouble(-1,1),Randoms.nextDouble(-1,1),Randoms.nextDouble(-1,1));
-    }
     public static Vector randomUnit(){
-        while(true){
-            Vector v=random();
-            final double l=v.normSq();
-            if(1e-144<l&&l<=1)
-                return v.div(Math.sqrt(l));
-        }
+        final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=2*Math.sqrt(b*(1-b));
+        return new Vector(Math.cos(a)*c,Math.sin(a)*c,1-2*b);
     }
     public static Vector randomOnHemisphere(Vector normal){
         Vector v=randomUnit();
         if(normal.dot(v)>0)
             return v;
         return v.neg();
+    }
+    public static Vector cosineOnHemisphere(Vector normal){
+        final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=Math.sqrt(b);
+        return new Onb(normal).transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
 }

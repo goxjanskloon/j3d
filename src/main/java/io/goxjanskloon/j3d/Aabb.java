@@ -1,7 +1,18 @@
 package io.goxjanskloon.j3d;
 import io.goxjanskloon.utils.*;
-public record Aabb(Interval x,Interval y,Interval z){
+public class Aabb{
+    public final Interval x,y,z;
     public static final Aabb empty=new Aabb(Interval.EMPTY,Interval.EMPTY,Interval.EMPTY);
+    public Aabb(Interval x,Interval y,Interval z){
+        this.x=x;
+        this.y=y;
+        this.z=z;
+    }
+    public Aabb(Vector a,Vector b){
+        x=new Interval(Math.min(a.x,b.x),Math.max(a.x,b.x));
+        y=new Interval(Math.min(a.y,b.y),Math.max(a.y,b.y));
+        z=new Interval(Math.min(a.z,b.z),Math.max(a.z,b.z));
+    }
     public Interval get(Dimension d){
         return switch(d){
             case X -> x;
@@ -20,7 +31,7 @@ public record Aabb(Interval x,Interval y,Interval z){
     public boolean hit(Ray ray,Interval interval){
         for(int i=0;i<=2;++i){
             final Dimension d=Dimension.valueOf(i);
-            if((interval=interval.intersect(new Interval((get(d).min()-ray.orig().get(d))/ray.dir().get(d),(get(d).max()-ray.orig().get(d))/ray.dir().get(d)))).isEmpty())
+            if((interval=interval.intersect(new Interval((get(d).min-ray.origin.get(d))/ray.direction.get(d),(get(d).max-ray.origin.get(d))/ray.direction.get(d)))).isEmpty())
                 return false;
         }
         return true;
@@ -29,9 +40,9 @@ public record Aabb(Interval x,Interval y,Interval z){
         return new Aabb(x.unite(other.x),y.unite(other.y),z.unite(other.z));
     }
     public int compareTo(Aabb other,Dimension d){
-        return Double.compare(get(d).min(),other.get(d).min());
+        return Double.compare(get(d).min,other.get(d).min);
     }
     public Aabb move(Vector motion){
-        return new Aabb(x.move(motion.x()),y.move(motion.y()),z.move(motion.z()));
+        return new Aabb(x.move(motion.x),y.move(motion.y),z.move(motion.z));
     }
 }
