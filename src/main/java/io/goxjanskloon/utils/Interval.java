@@ -30,4 +30,10 @@ public class Interval{
     public Interval move(double a){
         return new Interval(min+a,max+a);
     }
+    public Interval padToMinimum(){
+        if(max-min>1e-3)
+            return this;
+        final double c=(min+max)/2;
+        return new Interval(c-5e-4,c+5e-4);
+    }
 }

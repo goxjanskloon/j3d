@@ -1,6 +1,6 @@
 package io.goxjanskloon.j3d;
-public class Light implements Material{
+public class Lambertian implements Material{
     @Override public Pdf getPdf(Vector normal){
-        return new NullPdf();
+        return new CosinePdf(normal);
     }
 }

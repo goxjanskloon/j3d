@@ -45,4 +45,7 @@ public class Aabb{
     public Aabb move(Vector motion){
         return new Aabb(x.move(motion.x),y.move(motion.y),z.move(motion.z));
     }
+    public Aabb padToMinimum(){
+        return new Aabb(x.padToMinimum(),y.padToMinimum(),z.padToMinimum());
+    }
 }

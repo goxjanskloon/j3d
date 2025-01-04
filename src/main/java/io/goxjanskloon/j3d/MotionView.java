@@ -1,17 +1,23 @@
 package io.goxjanskloon.j3d;
 import io.goxjanskloon.utils.*;
 public class MotionView implements Hittable{
-    public final Hittable hittable;
+    public final Hittable object;
     public final Vector motion;
-    public MotionView(Hittable hittable,Vector motion){
-        this.hittable=hittable;
+    public MotionView(Hittable object,Vector motion){
+        this.object=object;
         this.motion=motion;
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
-        return hittable.hit(new Ray(ray.origin,ray.direction.add(motion.mul(Randoms.nextDouble()))),interval);
+        return object.hit(new Ray(ray.origin,ray.direction.add(motion.mul(Randoms.nextDouble()))),interval);
     }
     @Override public Aabb getAabb(){
-        Aabb aabb=hittable.getAabb();
+        Aabb aabb=object.getAabb();
         return aabb.unite(aabb.move(motion));
+    }
+    @Override public Vector randomOnSurface(){
+        return object.randomOnSurface();
+    }
+    @Override public double pdfValue(Ray ray){
+        return object.pdfValue(ray);
     }
 }

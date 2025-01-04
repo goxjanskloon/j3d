@@ -1,26 +1,26 @@
 package io.goxjanskloon.j3d;
 import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.Interval;
+import io.goxjanskloon.utils.Randoms;
 public class Quadrilateral implements Hittable{
     public final Vector origin,u,v,w,normal;
     public final double area,brightness,D;
-    public final Brdf brdf;
+    public final Material material;
     public final Color color;
     public final Aabb aabb;
-    public Quadrilateral(Vector origin,Vector u,Vector v,Color color,double brightness,Brdf brdf){
+    public Quadrilateral(Vector origin,Vector u,Vector v,Color color,double brightness,Material material){
         this.origin=origin;
         this.u=u;
         this.v=v;
         this.brightness=brightness;
-        this.brdf=brdf;
+        this.material=material;
         this.color=color;
         final Vector c=u.cross(v);
         normal=c.unit();
         area=c.norm();
         D=origin.dot(normal);
         w=c.div(c.normSq());
-        final Aabb a=new Aabb(origin,origin.add(u).add(v)).unite(new Aabb(origin.add(u),origin.add(v)));
-        aabb=new Aabb(new Interval(a.x.min,Math.max(a.x.min+1e-3,a.x.max)),new Interval(a.y.min,Math.max(a.y.min+1e-3,a.y.max)),new Interval(a.z.min,Math.max(a.z.min+1e-3,a.z.max)));
+        aabb=new Aabb(origin,origin.add(u).add(v)).unite(new Aabb(origin.add(u),origin.add(v))).padToMinimum();
     }
     @Override public Aabb getAabb(){
         return aabb;
@@ -39,6 +39,15 @@ public class Quadrilateral implements Hittable{
         final double b=w.dot(u.cross(q));
         if(b<0||b>1)
             return null;
-        return new HitRecord(p,normal,color,brightness,t,brdf);
+        return new HitRecord(p,d<0?normal:normal.neg(),color,brightness,t,material);
+    }
+    @Override public Vector randomOnSurface(){
+        return origin.add(u.mul(Randoms.nextDouble())).add(v.mul(Randoms.nextDouble()));
+    }
+    @Override public double pdfValue(Ray ray){
+        final HitRecord record=hit(ray,Camera.HIT_RANGE);
+        if(record==null)
+            return 0;
+        return record.distance()*record.distance()/(-ray.direction.dot(record.normal())*area);
     }
 }

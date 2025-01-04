@@ -10,15 +10,16 @@ public class Camera{
     static{
         PropertyConfigurator.configure(Camera.class.getClassLoader().getResourceAsStream("log4j.properties"));
     }
-    public final Hittable world;
+    public final Hittable world,light;
     public final Ray ray;
     public final Vector upDir,rightDir;
     public final int width,height,maxDepth,samplesPerPixel,dWidth;
     public Color backgroundLight;
     private final int halfWidth,halfHeight;
     private final ExecutorService threadPool;
-    public Camera(Hittable world,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color backgroundLight,int dWidth){
+    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color backgroundLight,int dWidth){
         this.world=world;
+        this.light=light;
         this.ray=ray;
         this.upDir=upDir;
         this.rightDir=rightDir;
@@ -34,13 +35,30 @@ public class Camera{
     public Color render(Ray ray,int depth){
         Hittable.HitRecord record=world.hit(ray,HIT_RANGE);
         if(record==null){
-            if(depth==1) return Color.BLACK;
+            if(depth==1)
+                return Color.BLACK;
             return backgroundLight;
         }
-        if(depth==maxDepth) return record.color().scale(record.brightness());
-        Vector reflectDir=ray.direction.sub(record.normal().mul(ray.direction.dot(record.normal())*2)).unit();
-        Vector fuzzedReflectDir=record.brdf().generate(record.normal(),reflectDir);
-        return fuzzedReflectDir==null?record.color().scale(record.brightness()):render(new Ray(record.point(),fuzzedReflectDir),depth+1).scale(record.brdf().getValue(reflectDir,fuzzedReflectDir)).scale(record.color()).mix(record.color().scale(record.brightness()));
+        Color emitted=record.color().scale(record.brightness());
+        if(depth==maxDepth)
+            return emitted;
+        final Pdf scatteringPdf=record.material().getPdf(record.normal());
+        final Pdf pdf=new MixturePdf(scatteringPdf,new HittablePdf(light,record.point()));
+        final Vector reflectDirection=pdf.generate();
+        if(reflectDirection==null)
+            return emitted;
+        if(pdf.valueOf(reflectDirection)==0)
+            throw new UnsupportedOperationException();
+        Color sample=render(new Ray(record.point(),reflectDirection),depth+1);
+        if(!sample.isValid())
+            throw new UnsupportedOperationException();
+        Color e2=sample.scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection));
+        if(!e2.isValid())
+            throw new UnsupportedOperationException();
+        Color ret=e2.scale(record.color()).mix(emitted);
+        if(!ret.isValid())
+            throw new UnsupportedOperationException();
+        return ret;
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;

@@ -29,10 +29,16 @@ public class BvhTree implements Hittable{
     @Override public Aabb getAabb(){
         return aabb;
     }
+    @Override public Vector randomOnSurface(){
+        throw new UnsupportedOperationException();
+    }
+    @Override public double pdfValue(Ray ray){
+        throw new UnsupportedOperationException();
+    }
     @Override public HitRecord hit(Ray ray,Interval interval){
         HitRecord leftHit=left==null?null:left.hit(ray,interval),rightHit=right==null?null:right.hit(ray,interval);
         if(leftHit==null) return rightHit;
         if(rightHit==null) return leftHit;
-        return leftHit.dist()<rightHit.dist()?leftHit:rightHit;
+        return leftHit.distance()<rightHit.distance()?leftHit:rightHit;
     }
 }

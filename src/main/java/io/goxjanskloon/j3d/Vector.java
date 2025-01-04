@@ -71,4 +71,11 @@ public class Vector{
         final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=Math.sqrt(b);
         return new Onb(normal).transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
+    public static Vector cosineOnHemisphere(Onb onb){
+        final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=Math.sqrt(b);
+        return onb.transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
+    }
+    public static Vector reflect(Vector v,Vector normal){
+        return v.sub(normal.mul(v.dot(normal)*2));
+    }
 }
