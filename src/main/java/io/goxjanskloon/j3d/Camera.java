@@ -47,18 +47,10 @@ public class Camera{
         final Vector reflectDirection=pdf.generate();
         if(reflectDirection==null)
             return emitted;
-        if(pdf.valueOf(reflectDirection)==0)
-            throw new UnsupportedOperationException();
-        Color sample=render(new Ray(record.point(),reflectDirection),depth+1);
-        if(!sample.isValid())
-            throw new UnsupportedOperationException();
-        Color e2=sample.scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection));
-        if(!e2.isValid())
-            throw new UnsupportedOperationException();
-        Color ret=e2.scale(record.color()).mix(emitted);
-        if(!ret.isValid())
-            throw new UnsupportedOperationException();
-        return ret;
+        final double pdfValue=pdf.valueOf(reflectDirection);
+        if(pdfValue==0)
+            return emitted;
+        return render(new Ray(record.point(),reflectDirection),depth+1).scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection)).scale(record.color()).mix(emitted);
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;
