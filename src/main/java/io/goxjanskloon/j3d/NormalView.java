@@ -19,6 +19,6 @@ public class NormalView implements Hittable{
         HitRecord record=object.hit(ray,interval);
         if(record==null)
             return null;
-        return new HitRecord(record.point(),record.normal(),new Color((record.normal().x+1)/2,(record.normal().y+1)/2,(record.normal().z+1)/2),1,record.distance(),new Light());
+        return new HitRecord(record.point,record.normal,new Color((record.normal.x+1)/2,(record.normal.y+1)/2,(record.normal.z+1)/2),1,record.distance,new Light(),ray.direction);
     }
 }

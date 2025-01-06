@@ -15,13 +15,15 @@ public class Aabb{
     }
     public Interval get(Dimension d){
         return switch(d){
-            case X -> x;
-            case Y -> y;
-            case Z -> z;
+            case X->x;
+            case Y->y;
+            case Z->z;
         };
     }
     public Dimension getLongestAxis(){
-        final double xl=x.length(), yl=y.length(), zl=z.length();
+        var xl=x.length();
+        var yl=y.length();
+        var zl=z.length();
         if(xl>yl&&xl>zl)
             return Dimension.X;
         if(yl>xl&&yl>zl)
@@ -30,7 +32,7 @@ public class Aabb{
     }
     public boolean hit(Ray ray,Interval interval){
         for(int i=0;i<=2;++i){
-            final Dimension d=Dimension.valueOf(i);
+            var d=Dimension.valueOf(i);
             if((interval=interval.intersect(new Interval((get(d).min-ray.origin.get(d))/ray.direction.get(d),(get(d).max-ray.origin.get(d))/ray.direction.get(d)))).isEmpty())
                 return false;
         }

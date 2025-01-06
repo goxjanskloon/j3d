@@ -3,8 +3,10 @@ import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.Interval;
 import io.goxjanskloon.utils.Randoms;
 public class Quadrilateral implements Hittable{
-    public final Vector origin,u,v,w,normal;
-    public final double area,brightness,D;
+    public final Vector origin,u,v,normal;
+    private final Vector w;
+    public final double area,brightness;
+    private final double D;
     public final Material material;
     public final Color color;
     public final Aabb aabb;
@@ -15,7 +17,7 @@ public class Quadrilateral implements Hittable{
         this.brightness=brightness;
         this.material=material;
         this.color=color;
-        final Vector c=u.cross(v);
+        var c=u.cross(v);
         normal=c.unit();
         area=c.norm();
         D=origin.dot(normal);
@@ -26,28 +28,29 @@ public class Quadrilateral implements Hittable{
         return aabb;
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
-        final double d=normal.dot(ray.direction);
+        var d=normal.dot(ray.direction);
         if(Math.abs(d)<1e-8)
             return null;
-        final double t=(D-ray.origin.dot(normal))/d;
+        var t=(D-ray.origin.dot(normal))/d;
         if(!interval.contains(t))
             return null;
-        final Vector p=ray.at(t),q=p.sub(origin);
-        final double a=w.dot(q.cross(v));
+        var p=ray.at(t);
+        var q=p.sub(origin);
+        var a=w.dot(q.cross(v));
         if(a<0||a>1)
             return null;
-        final double b=w.dot(u.cross(q));
+        var b=w.dot(u.cross(q));
         if(b<0||b>1)
             return null;
-        return new HitRecord(p,d<0?normal:normal.neg(),color,brightness,t,material);
+        return new HitRecord(p,normal,color,brightness,t,material,d);
     }
     @Override public Vector randomOnSurface(){
         return origin.add(u.mul(Randoms.nextDouble())).add(v.mul(Randoms.nextDouble()));
     }
     @Override public double pdfValue(Ray ray){
-        final HitRecord record=hit(ray,Camera.HIT_RANGE);
+        var record=hit(ray,Camera.HIT_RANGE);
         if(record==null)
             return 0;
-        return record.distance()*record.distance()/(-ray.direction.dot(record.normal())*area);
+        return record.distance*record.distance/(-ray.direction.dot(record.normal)*area);
     }
 }

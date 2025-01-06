@@ -22,7 +22,7 @@ public class Color{
         return new Color(red/scale,green/scale,blue/scale);
     }
     public Rgb toRgb(){
-        final Color c=new Color(RANGE.clamp(red),RANGE.clamp(green),RANGE.clamp(blue)).scale(Rgb.MAX);
+        var c=new Color(RANGE.clamp(red),RANGE.clamp(green),RANGE.clamp(blue)).scale(Rgb.MAX);
         return new Rgb((int)c.red,(int)c.green,(int)c.blue);
     }
     public boolean isValid(){

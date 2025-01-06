@@ -9,9 +9,9 @@ public class Vector{
     }
     public double get(Dimension d){
         return switch(d){
-            case X -> x;
-            case Y -> y;
-            case Z -> z;
+            case X->x;
+            case Y->y;
+            case Z->z;
         };
     }
     public double dot(Vector v){
@@ -54,25 +54,31 @@ public class Vector{
         return sub(axis.origin).rotate(axis.direction,angle).add(axis.origin);
     }
     public Vector rotate(Vector axis,double angle){
-        final double cos=Math.cos(angle);
+        var cos=Math.cos(angle);
         return mul(cos).add(axis.mul(1-cos).mul(dot(axis))).add(axis.cross(this).mul(Math.sin(angle)));
     }
     public static Vector randomUnit(){
-        final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=2*Math.sqrt(b*(1-b));
+        var a=Randoms.nextDouble(0,2*Math.PI);
+        var b=Randoms.nextDouble();
+        var c=2*Math.sqrt(b*(1-b));
         return new Vector(Math.cos(a)*c,Math.sin(a)*c,1-2*b);
     }
     public static Vector randomOnHemisphere(Vector normal){
-        Vector v=randomUnit();
+        var v=randomUnit();
         if(normal.dot(v)>0)
             return v;
         return v.neg();
     }
     public static Vector cosineOnHemisphere(Vector normal){
-        final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=Math.sqrt(b);
+        var a=Randoms.nextDouble(0,2*Math.PI);
+        var b=Randoms.nextDouble();
+        var c=Math.sqrt(b);
         return new Onb(normal).transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
     public static Vector cosineOnHemisphere(Onb onb){
-        final double a=Randoms.nextDouble(0,2*Math.PI), b=Randoms.nextDouble(), c=Math.sqrt(b);
+        var a=Randoms.nextDouble(0,2*Math.PI);
+        var b=Randoms.nextDouble();
+        var c=Math.sqrt(b);
         return onb.transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
     public static Vector reflect(Vector v,Vector normal){

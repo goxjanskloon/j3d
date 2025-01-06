@@ -16,12 +16,12 @@ public class BvhTree implements Hittable{
         else if(objects.size()==2){
             aabb=(left=objects.getFirst()).getAabb().unite((right=objects.getLast()).getAabb());
         }else{
-            Aabb tb=Aabb.empty;
+            var tb=Aabb.empty;
             for(Hittable obj: objects)
                 tb=tb.unite(obj.getAabb());
-            final Dimension d=(aabb=tb).getLongestAxis();
+            var d=(aabb=tb).getLongestAxis();
             objects.sort((a,b)->a.getAabb().compareTo(b.getAabb(),d));
-            final int mid=objects.size()>>1;
+            var mid=objects.size()>>1;
             left=new BvhTree(objects.subList(0,mid));
             right=new BvhTree(objects.subList(mid,objects.size()));
         }
@@ -36,9 +36,10 @@ public class BvhTree implements Hittable{
         throw new UnsupportedOperationException();
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
-        HitRecord leftHit=left==null?null:left.hit(ray,interval),rightHit=right==null?null:right.hit(ray,interval);
+        var leftHit=left==null?null:left.hit(ray,interval);
+        var rightHit=right==null?null:right.hit(ray,interval);
         if(leftHit==null) return rightHit;
         if(rightHit==null) return leftHit;
-        return leftHit.distance()<rightHit.distance()?leftHit:rightHit;
+        return leftHit.distance<rightHit.distance?leftHit:rightHit;
     }
 }

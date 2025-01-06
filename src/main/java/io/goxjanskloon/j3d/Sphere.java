@@ -14,17 +14,18 @@ public class Sphere implements Hittable{
         this.material=material;
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
-        final Vector co=ray.origin.sub(center);
-        final double b=ray.direction.dot(co), d=b*b-co.normSq()+radius*radius;
+        var co=ray.origin.sub(center);
+        var b=ray.direction.dot(co);
+        var d=b*b-co.normSq()+radius*radius;
         if(d<0)
             return null;
-        final double sd=Math.sqrt(d);
-        double t=-b-sd;
+        var sd=Math.sqrt(d);
+        var t=-b-sd;
         if(!interval.contains(t))
             t+=sd*2;
         if(interval.contains(t)){
             final Vector point=ray.at(t);
-            return new HitRecord(point,point.sub(center).unit(),color,brightness,t,material);
+            return new HitRecord(point,point.sub(center).unit(),color,brightness,t,material,ray.direction);
         }else
             return null;
     }
@@ -35,7 +36,7 @@ public class Sphere implements Hittable{
         return Vector.randomUnit().mul(radius).add(center);
     }
     @Override public double pdfValue(Ray ray){
-        final HitRecord record=hit(ray,Camera.HIT_RANGE);
+        var record=hit(ray,Camera.HIT_RANGE);
         if(record==null)
             return 0;
        return 1/(2*Math.PI*(1-Math.sqrt(1-radius*radius/center.sub(ray.origin).normSq())));

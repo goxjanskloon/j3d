@@ -27,18 +27,16 @@ public class CameraTest{
             fail("Error rendering to image");
     }
     @Test public void cornellBox(){
-        final List<Hittable> world=new ArrayList<>();
-        final Material lambertian=new Lambertian();
-        world.add(new Quadrilateral(new Vector(-5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.RED,0,lambertian));
-        world.add(new Quadrilateral(new Vector(5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.GREEN,0,lambertian));
-        world.add(new Quadrilateral(new Vector(-5,-10,-5),new Vector(0,0,10),new Vector(10,0,0),Color.YELLOW,0,lambertian));
+        var world=new ArrayList<Hittable>();
+        var lambertian=new Lambertian();
+        //world.add(new Quadrilateral(new Vector(-5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.RED,0,lambertian));
+        //world.add(new Quadrilateral(new Vector(5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.GREEN,0,lambertian));
+        //world.add(new Quadrilateral(new Vector(-5,-10,-5),new Vector(0,0,10),new Vector(10,0,0),Color.YELLOW,0,lambertian));
         world.add(new Quadrilateral(new Vector(-5,10,5),new Vector(10,0,0),new Vector(0,-20,0),Color.CYAN,0,lambertian));
-        Hittable light=new Quadrilateral(new Vector(-5,10,-5),new Vector(10,0,0),new Vector(0,0,10),Color.WHITE,1,new Light());
+        var light=new Quadrilateral(new Vector(-5,10,-5),new Vector(10,0,0),new Vector(0,0,10),Color.WHITE,1,new Light());
         world.add(light);
-        final BvhTree bvhTree=new BvhTree(world);
-        final Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
-        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,1,0),new Vector(1,0,0),600,360,8,1000,Color.BLACK,30);
-        final Image image=camera.render();
+        var camera=new Camera(new BvhTree(world),light,new Ray(new Vector(0,0,-20),new Vector(0,0,300)),new Vector(0,1,0),new Vector(1,0,0),600,360,2,1,Color.BLACK,600);
+        var image=camera.render();
         if(image!=null){
             try{
                 final FileWriter file=new FileWriter("CameraTest.cornellBox().ppm");

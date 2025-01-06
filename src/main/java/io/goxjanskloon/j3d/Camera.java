@@ -29,33 +29,35 @@ public class Camera{
         this.samplesPerPixel=samplesPerPixel;
         this.backgroundLight=backgroundLight;
         this.dWidth=dWidth;
-        final int threadNumber=width/dWidth+5;
+        var threadNumber=width/dWidth+5;
         threadPool=new ThreadPoolExecutor(threadNumber,threadNumber,Long.MAX_VALUE,TimeUnit.DAYS,new ArrayBlockingQueue<>(threadNumber));
     }
     public Color render(Ray ray,int depth){
-        Hittable.HitRecord record=world.hit(ray,HIT_RANGE);
+        var record=world.hit(ray,HIT_RANGE);
         if(record==null){
             if(depth==1)
                 return Color.BLACK;
             return backgroundLight;
         }
-        Color emitted=record.color().scale(record.brightness());
+        Color emitted=record.color.scale(record.brightness);
         if(depth==maxDepth)
             return emitted;
-        final Pdf scatteringPdf=record.material().getPdf(record.normal());
-        final Pdf pdf=new MixturePdf(scatteringPdf,new HittablePdf(light,record.point()));
-        final Vector reflectDirection=pdf.generate();
+        var scatteringPdf=record.material.getPdf(record.normal);
+        if(scatteringPdf==null)
+            return emitted;
+        var pdf=new MixturePdf(scatteringPdf,new HittablePdf(light,record.point));
+        var reflectDirection=pdf.generate();
         if(reflectDirection==null)
             return emitted;
-        final double pdfValue=pdf.valueOf(reflectDirection);
+        var pdfValue=pdf.valueOf(reflectDirection);
         if(pdfValue==0)
             return emitted;
-        return render(new Ray(record.point(),reflectDirection),depth+1).scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection)).scale(record.color()).mix(emitted);
+        return render(new Ray(record.point,reflectDirection),depth+1).scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection)).scale(record.color).mix(emitted);
     }
     public Color render(int x,int y){
-        Color s=Color.BLACK;
+        var s=Color.BLACK;
         for(int i=0;i<samplesPerPixel;++i){
-            final Color sample=render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
+            var sample=render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1);
             if(sample.isValid())
                 s=s.mix(sample);
         }
@@ -74,13 +76,13 @@ public class Camera{
             for(int i=0;i<height;++i)
                 for(int j=l;j<r;++j)
                     p[i][j]=render(j,i).toRgb();
-            final int remain=total.decrementAndGet();
+            var remain=total.decrementAndGet();
             logger.log(Level.INFO,"Thread "+l/dWidth+" finished,"+remain+" thread"+(remain>1?"s":"")+" left.");
         }
     }
     public Image render(){
-        Image image=new Image(new Rgb[height][width]);
-        AtomicInteger total=new AtomicInteger();
+        var image=new Image(new Rgb[height][width]);
+        var total=new AtomicInteger();
         for(int i=0;i<width;i+=dWidth){
             total.incrementAndGet();
             threadPool.execute(new renderRunnable(i,image.pixels,total));

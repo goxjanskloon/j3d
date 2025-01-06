@@ -33,7 +33,7 @@ public class Interval{
     public Interval padToMinimum(){
         if(max-min>1e-3)
             return this;
-        final double c=(min+max)/2;
+        var c=(min+max)/2;
         return new Interval(c-5e-4,c+5e-4);
     }
 }
