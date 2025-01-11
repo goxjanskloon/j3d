@@ -1,4 +1,7 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.hittables;
+import io.goxjanskloon.j3d.Aabb;
+import io.goxjanskloon.j3d.Ray;
+import io.goxjanskloon.j3d.Vector;
 import io.goxjanskloon.utils.*;
 public class MotionView implements Hittable{
     public final Hittable object;

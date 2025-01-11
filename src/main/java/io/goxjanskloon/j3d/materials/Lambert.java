@@ -1,6 +1,8 @@
-package io.goxjanskloon.j3d;
-public class Lambertian implements Material{
-    @Override public Pdf getPdf(Vector normal){
+package io.goxjanskloon.j3d.materials;
+import io.goxjanskloon.j3d.pdfs.Pdf;
+import io.goxjanskloon.j3d.Vector;
+public class Lambert implements Material{
+    @Override public Pdf getPdf(Vector in,Vector normal){
         return new Pdf(){
             @Override public double valueOf(Vector direction){
                 return 1/(2*Math.PI);

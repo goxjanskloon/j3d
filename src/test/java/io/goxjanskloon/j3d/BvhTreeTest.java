@@ -1,4 +1,7 @@
 package io.goxjanskloon.j3d;
+import io.goxjanskloon.j3d.hittables.BvhTree;
+import io.goxjanskloon.j3d.hittables.Hittable;
+import io.goxjanskloon.j3d.hittables.Sphere;
 import org.junit.jupiter.api.*;
 import io.goxjanskloon.utils.*;
 import static org.junit.jupiter.api.Assertions.*;

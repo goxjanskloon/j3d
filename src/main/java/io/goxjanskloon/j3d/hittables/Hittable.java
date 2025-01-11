@@ -1,5 +1,9 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.hittables;
 import io.goxjanskloon.graphics.*;
+import io.goxjanskloon.j3d.Aabb;
+import io.goxjanskloon.j3d.Ray;
+import io.goxjanskloon.j3d.Vector;
+import io.goxjanskloon.j3d.materials.Material;
 import io.goxjanskloon.utils.*;
 public interface Hittable{
     class HitRecord{
@@ -7,12 +11,9 @@ public interface Hittable{
         public final Color color;
         public final double brightness,distance;
         public final Material material;
-        public HitRecord(Vector point,Vector normal,Color color,double brightness,double distance,Material material,Vector in){
-            this(point,normal,color,brightness,distance,material,in.dot(normal));
-        }
-        public HitRecord(Vector point,Vector normal,Color color,double brightness,double distance,Material material,double cosine){
+        public HitRecord(Vector point,Vector normal,Color color,double brightness,double distance,Material material){
             this.point=point;
-            this.normal=cosine<0?normal:normal.neg();
+            this.normal=normal;
             this.color=color;
             this.brightness=brightness;
             this.distance=distance;

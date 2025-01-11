@@ -1,4 +1,5 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.pdfs;
+import io.goxjanskloon.j3d.Vector;
 import io.goxjanskloon.utils.Randoms;
 public class MixturePdf implements Pdf{
     public final Pdf p1,p2;

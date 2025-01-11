@@ -1,5 +1,10 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.hittables;
 import io.goxjanskloon.graphics.*;
+import io.goxjanskloon.j3d.Aabb;
+import io.goxjanskloon.j3d.Camera;
+import io.goxjanskloon.j3d.Ray;
+import io.goxjanskloon.j3d.Vector;
+import io.goxjanskloon.j3d.materials.Material;
 import io.goxjanskloon.utils.Interval;
 import io.goxjanskloon.utils.Randoms;
 public class Quadrilateral implements Hittable{
@@ -42,7 +47,7 @@ public class Quadrilateral implements Hittable{
         var b=w.dot(u.cross(q));
         if(b<0||b>1)
             return null;
-        return new HitRecord(p,normal,color,brightness,t,material,d);
+        return new HitRecord(p,normal,color,brightness,t,material);
     }
     @Override public Vector randomOnSurface(){
         return origin.add(u.mul(Randoms.nextDouble())).add(v.mul(Randoms.nextDouble()));

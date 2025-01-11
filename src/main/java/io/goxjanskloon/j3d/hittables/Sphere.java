@@ -1,5 +1,10 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.hittables;
 import io.goxjanskloon.graphics.*;
+import io.goxjanskloon.j3d.Aabb;
+import io.goxjanskloon.j3d.Camera;
+import io.goxjanskloon.j3d.Ray;
+import io.goxjanskloon.j3d.Vector;
+import io.goxjanskloon.j3d.materials.Material;
 import io.goxjanskloon.utils.*;
 public class Sphere implements Hittable{
     public final Vector center;
@@ -25,7 +30,7 @@ public class Sphere implements Hittable{
             t+=sd*2;
         if(interval.contains(t)){
             final Vector point=ray.at(t);
-            return new HitRecord(point,point.sub(center).unit(),color,brightness,t,material,ray.direction);
+            return new HitRecord(point,point.sub(center).unit(),color,brightness,t,material);
         }else
             return null;
     }

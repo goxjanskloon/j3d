@@ -1,4 +1,6 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.pdfs;
+import io.goxjanskloon.j3d.Onb;
+import io.goxjanskloon.j3d.Vector;
 public class CosinePdf implements Pdf{
     public final Onb onb;
     public CosinePdf(Vector normal){

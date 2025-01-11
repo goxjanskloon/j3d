@@ -1,5 +1,9 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.hittables;
 import java.util.*;
+
+import io.goxjanskloon.j3d.Aabb;
+import io.goxjanskloon.j3d.Ray;
+import io.goxjanskloon.j3d.Vector;
 import io.goxjanskloon.utils.*;
 public class BvhTree implements Hittable{
     public final Hittable left,right;

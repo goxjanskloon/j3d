@@ -1,6 +1,12 @@
 package io.goxjanskloon.j3d;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
+
+import io.goxjanskloon.j3d.hittables.Hittable;
+import io.goxjanskloon.j3d.pdfs.FallbackPdf;
+import io.goxjanskloon.j3d.pdfs.HittablePdf;
+import io.goxjanskloon.j3d.pdfs.MixturePdf;
+import io.goxjanskloon.j3d.pdfs.Pdf;
 import org.apache.log4j.*;
 import io.goxjanskloon.graphics.*;
 import io.goxjanskloon.utils.*;
@@ -42,17 +48,19 @@ public class Camera{
         Color emitted=record.color.scale(record.brightness);
         if(depth==maxDepth)
             return emitted;
-        var scatteringPdf=record.material.getPdf(record.normal);
+        var scatteringPdf=record.material.getPdf(ray.direction,record.normal);
         if(scatteringPdf==null)
             return emitted;
-        var pdf=new MixturePdf(scatteringPdf,new HittablePdf(light,record.point));
+        Pdf pdf;
+        if(scatteringPdf instanceof FallbackPdf)
+            pdf=scatteringPdf;
+        else
+            pdf=new MixturePdf(scatteringPdf,new HittablePdf(light,record.point));
         var reflectDirection=pdf.generate();
         if(reflectDirection==null)
             return emitted;
         var pdfValue=pdf.valueOf(reflectDirection);
-        if(pdfValue==0)
-            return emitted;
-        return render(new Ray(record.point,reflectDirection),depth+1).scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection)).scale(record.color).mix(emitted);
+        return pdfValue==0?emitted:render(new Ray(record.point,reflectDirection),depth+1).scale(scatteringPdf.valueOf(reflectDirection)/pdf.valueOf(reflectDirection)).scale(record.color).mix(emitted);
     }
     public Color render(int x,int y){
         var s=Color.BLACK;

@@ -1,4 +1,7 @@
-package io.goxjanskloon.j3d;
+package io.goxjanskloon.j3d.pdfs;
+import io.goxjanskloon.j3d.hittables.Hittable;
+import io.goxjanskloon.j3d.Ray;
+import io.goxjanskloon.j3d.Vector;
 public class HittablePdf implements Pdf{
     public final Hittable object;
     public final Vector origin;
