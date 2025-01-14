@@ -56,6 +56,6 @@ public class Quadrilateral implements Hittable{
         var record=hit(ray,Camera.HIT_RANGE);
         if(record==null)
             return 0;
-        return record.distance*record.distance/(-ray.direction.dot(record.normal)*area);
+        return record.distance*record.distance/(Math.abs(ray.direction.dot(record.normal))*area);
     }
 }

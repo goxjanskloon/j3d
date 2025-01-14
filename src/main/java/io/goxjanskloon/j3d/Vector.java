@@ -82,12 +82,11 @@ public class Vector{
         return onb.transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
     public static Vector reflect(Vector v,Vector normal){
-        if(v.dot(normal)>0)
-            normal=normal.neg();
-        return v.sub(normal.mul(v.dot(normal)*2));
+        var u=v.sub(normal.mul(v.dot(normal)*2));
+        return u.dot(normal)>0?u:u.neg();
     }
     public static Vector refract(Vector uv,Vector normal,double eoe){
-        var pe=normal.mul(Math.min(uv.neg().dot(normal),1)).add(uv).mul(eoe);
+        var pe=normal.mul(Math.min(-uv.dot(normal),1)).add(uv).mul(eoe);
         return normal.mul(-Math.sqrt(Math.abs(1-pe.normSq()))).add(pe);
     }
 }

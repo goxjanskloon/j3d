@@ -7,7 +7,7 @@ public class CosinePdf implements Pdf{
         onb=new Onb(normal);
     }
     @Override public double valueOf(Vector direction){
-        return direction.dot(onb.w)/Math.PI;
+        return Math.abs(direction.dot(onb.w))/Math.PI;
     }
     @Override public Vector generate(){
         return Vector.cosineOnHemisphere(onb);

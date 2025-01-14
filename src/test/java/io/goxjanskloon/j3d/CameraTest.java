@@ -12,7 +12,7 @@ public class CameraTest{
         //world.add(new Sphere(new Vector(-5,0,0),5,Color.RED,0,new Lambert()));
         world.add(new Sphere(new Vector(0,0,0),5,Color.WHITE,0,new Dielectric(1.5)));
         world.add(new Quadrilateral(new Vector(-5,-5,-5),new Vector(10,0,0),new Vector(0,0,10),Color.YELLOW,0,new Lambert()));
-        Hittable light=new Quadrilateral(new Vector(-5,5,-5),new Vector(10,0,0),new Vector(0,0,10),Color.WHITE,12,new Light());
+        Hittable light=new Quadrilateral(new Vector(-5,5,-5),new Vector(10,0,0),new Vector(0,0,10),Color.WHITE,5,new Light());
         world.add(light);
         final BvhTree bvhTree=new BvhTree(world);
         final Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
@@ -31,14 +31,14 @@ public class CameraTest{
     }
     @Test public void cornellBox(){
         var world=new ArrayList<Hittable>();
-        var lambert=new Lambert();
+        var lambert=new Mirror();
         world.add(new Quadrilateral(new Vector(-5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.RED,0,lambert));
-        world.add(new Quadrilateral(new Vector(5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.WHITE,0,lambert));
+        world.add(new Quadrilateral(new Vector(5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.BLUE,0,lambert));
         world.add(new Quadrilateral(new Vector(-5,-10,-5),new Vector(0,0,10),new Vector(10,0,0),Color.YELLOW,0,lambert));
         world.add(new Quadrilateral(new Vector(-5,10,5),new Vector(10,0,0),new Vector(0,-20,0),Color.CYAN,0,lambert));
         var light=new Quadrilateral(new Vector(-5,10,-5),new Vector(10,0,0),new Vector(0,0,10),Color.WHITE,1,new Light());
         world.add(light);
-        var camera=new Camera(new BvhTree(world),light,new Ray(new Vector(0,0,-20),new Vector(0,0,300)),new Vector(0,1,0),new Vector(1,0,0),600,360,8,1000,Color.BLACK,30);
+        var camera=new Camera(new BvhTree(world),light,new Ray(new Vector(0,0,-20),new Vector(0,0,300)),new Vector(0,1,0),new Vector(1,0,0),600,360,50,1,Color.BLACK,600);
         var image=camera.render();
         if(image!=null){
             try{
