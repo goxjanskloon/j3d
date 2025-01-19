@@ -6,16 +6,18 @@ import io.goxjanskloon.utils.*;
 public class MotionView implements Hittable{
     public final Hittable object;
     public final Vector motion;
+    public final Aabb aabb;
     public MotionView(Hittable object,Vector motion){
         this.object=object;
         this.motion=motion;
+        Aabb a=object.getAabb();
+        aabb=a.unite(a.move(motion));
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
         return object.hit(new Ray(ray.origin,ray.direction.add(motion.mul(Randoms.nextDouble()))),interval);
     }
     @Override public Aabb getAabb(){
-        Aabb aabb=object.getAabb();
-        return aabb.unite(aabb.move(motion));
+        return aabb;
     }
     @Override public Vector randomOnSurface(){
         return object.randomOnSurface();

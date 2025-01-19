@@ -11,12 +11,14 @@ public class Sphere implements Hittable{
     public final double radius,brightness;
     public final Color color;
     public final Material material;
+    public final Aabb aabb;
     public Sphere(Vector center,double radius,Color color,double brightness,Material material){
         this.center=center;
         this.radius=radius;
         this.color=color;
         this.brightness=brightness;
         this.material=material;
+        aabb=new Aabb(new Interval(center.x-radius,center.x+radius),new Interval(center.y-radius,center.y+radius),new Interval(center.z-radius,center.z+radius));
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
         var co=ray.origin.sub(center);
@@ -35,7 +37,7 @@ public class Sphere implements Hittable{
             return null;
     }
     @Override public Aabb getAabb(){
-        return new Aabb(new Interval(center.x-radius,center.x+radius),new Interval(center.y-radius,center.y+radius),new Interval(center.z-radius,center.z+radius));
+        return aabb;
     }
     @Override public Vector randomOnSurface(){
         return Vector.randomUnit().mul(radius).add(center);

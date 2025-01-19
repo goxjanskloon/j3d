@@ -19,10 +19,8 @@ public class CameraTest{
         final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,1,0),new Vector(1,0,0),300,300,8,1000,Color.BLACK,15);
         final Image image=camera.render();
         if(image!=null){
-            try{
-                final FileWriter file=new FileWriter("CameraTest.balls().ppm");
+            try(FileWriter file=new FileWriter("CameraTest.balls().ppm")){
                 image.output(file);
-                file.close();
             }catch(IOException e){
                 fail("Error writing image to file",e);
             }
@@ -33,18 +31,16 @@ public class CameraTest{
         var world=new ArrayList<Hittable>();
         var lambert=new Mirror();
         world.add(new Quadrilateral(new Vector(-5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.RED,0,lambert));
-        world.add(new Quadrilateral(new Vector(5,10,-5),new Vector(0,0,10),new Vector(0,-20,0),Color.BLUE,0,lambert));
+        world.add(new Quadrilateral(new Vector(5,10,-5),new Vector(0,-20,0),new Vector(0,0,10),Color.GREEN,0,lambert));
         world.add(new Quadrilateral(new Vector(-5,-10,-5),new Vector(0,0,10),new Vector(10,0,0),Color.YELLOW,0,lambert));
         world.add(new Quadrilateral(new Vector(-5,10,5),new Vector(10,0,0),new Vector(0,-20,0),Color.CYAN,0,lambert));
         var light=new Quadrilateral(new Vector(-5,10,-5),new Vector(10,0,0),new Vector(0,0,10),Color.WHITE,1,new Light());
         world.add(light);
-        var camera=new Camera(new BvhTree(world),light,new Ray(new Vector(0,0,-20),new Vector(0,0,300)),new Vector(0,1,0),new Vector(1,0,0),600,360,50,1,Color.BLACK,600);
+        var camera=new Camera(new BvhTree(world),light,new Ray(new Vector(0,0,-20),new Vector(0,0,300)),new Vector(0,1,0),new Vector(1,0,0),600,360,50,10,Color.BLACK,300);
         var image=camera.render();
         if(image!=null){
-            try{
-                final FileWriter file=new FileWriter("CameraTest.cornellBox().ppm");
+            try(FileWriter file=new FileWriter("CameraTest.cornellBox().ppm")){
                 image.output(file);
-                file.close();
             }catch(IOException e){
                 fail("Error writing image to file",e);
             }

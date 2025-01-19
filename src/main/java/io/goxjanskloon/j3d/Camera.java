@@ -51,11 +51,7 @@ public class Camera{
         var scatteringPdf=record.material.getPdf(ray.direction,record.normal);
         if(scatteringPdf==null)
             return emitted;
-        Pdf pdf;
-        if(scatteringPdf instanceof FallbackPdf)
-            pdf=scatteringPdf;
-        else
-            pdf=new MixturePdf(scatteringPdf,new HittablePdf(light,record.point));
+        Pdf pdf=scatteringPdf instanceof FallbackPdf?scatteringPdf:new MixturePdf(scatteringPdf,new HittablePdf(light,record.point));
         var reflectDirection=pdf.generate();
         if(reflectDirection==null)
             return emitted;
