@@ -11,10 +11,10 @@ public class BvhTreeTest{
     private final BvhTree bvhTree;
     public BvhTreeTest(){
         objects=new ArrayList<>();
-        objects.add(new Sphere(new Vector(0,2,0),1,null,0,null));
-        objects.add(new Sphere(new Vector(0,-2,0),1,null,0,null));
-        objects.add(new Sphere(new Vector(2,0,0),1,null,0,null));
-        objects.add(new Sphere(new Vector(-2,0,0),1,null,0,null));
+        objects.add(new Sphere(new Vector(0,2,0),1,null));
+        objects.add(new Sphere(new Vector(0,-2,0),1,null));
+        objects.add(new Sphere(new Vector(2,0,0),1,null));
+        objects.add(new Sphere(new Vector(-2,0,0),1,null));
         bvhTree=new BvhTree(objects);
     }
     @Test public void hit(){

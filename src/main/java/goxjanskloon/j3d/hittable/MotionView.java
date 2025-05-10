@@ -20,8 +20,8 @@ public class MotionView implements Hittable{
     @Override public Aabb getAabb(){
         return aabb;
     }
-    @Override public Vector randomOnSurface(){
-        return object.randomOnSurface();
+    @Override public Vector random(Vector origin){
+        return object.random(origin);
     }
     @Override public double pdfValue(Ray ray){
         return object.pdfValue(ray);

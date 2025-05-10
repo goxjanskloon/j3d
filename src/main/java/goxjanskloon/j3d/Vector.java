@@ -41,11 +41,11 @@ public class Vector{
     public Vector neg(){
         return new Vector(-x,-y,-z);
     }
-    public double normSq(){
+    public double selfDot(){
         return dot(this);
     }
     public double norm(){
-        return Math.sqrt(normSq());
+        return Math.sqrt(selfDot());
     }
     public Vector unit(){
         return div(norm());
@@ -82,12 +82,10 @@ public class Vector{
         return onb.transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
     public static Vector reflect(Vector v,Vector normal){
-        if(v.dot(normal)>0)
-            normal=normal.neg();
         return v.sub(normal.mul(v.dot(normal)*2));
     }
     public static Vector refract(Vector uv,Vector normal,double eoe){
         var pe=normal.mul(Math.min(-uv.dot(normal),1)).add(uv).mul(eoe);
-        return normal.mul(-Math.sqrt(Math.abs(1-pe.normSq()))).add(pe);
+        return normal.mul(-Math.sqrt(Math.abs(1-pe.selfDot()))).add(pe);
     }
 }

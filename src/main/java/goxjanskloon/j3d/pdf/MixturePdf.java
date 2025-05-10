@@ -13,7 +13,6 @@ public class MixturePdf implements Pdf{
     @Override public Vector generate(){
         if(Randoms.nextDouble()<0.5)
             return p1.generate();
-        else
-            return p2.generate();
+        else return p2.generate();
     }
 }

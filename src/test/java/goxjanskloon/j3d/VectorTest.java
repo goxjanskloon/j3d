@@ -46,9 +46,9 @@ public class VectorTest{
         Vector a=new Vector(1.3,-2.4,0.7),b=a.neg(),c=a.add(b);
         assertTrue(c.norm()<1e-5);
     }
-    @Test void normSq(){
+    @Test void selfDot(){
         Vector a=new Vector(1.3,-2.4,0.7);
-        assertTrue(Math.abs(a.normSq()-7.94)<1e-5);
+        assertTrue(Math.abs(a.selfDot()-7.94)<1e-5);
     }
     @Test void norm(){
         Vector a=new Vector(1.3,-2.4,0.7);

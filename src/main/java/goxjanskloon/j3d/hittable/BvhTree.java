@@ -32,7 +32,7 @@ public class BvhTree implements Hittable{
     @Override public Aabb getAabb(){
         return aabb;
     }
-    @Override public Vector randomOnSurface(){
+    @Override public Vector random(Vector origin){
         throw new UnsupportedOperationException();
     }
     @Override public double pdfValue(Ray ray){

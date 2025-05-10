@@ -25,7 +25,7 @@ public class Color{
         var c=new Color(RANGE.clamp(red),RANGE.clamp(green),RANGE.clamp(blue)).scale(Rgb.MAX);
         return new Rgb((int)c.red,(int)c.green,(int)c.blue);
     }
-    public boolean isValid(){
-        return Double.isFinite(red)&&red>=0&&Double.isFinite(green)&&green>=0&&Double.isFinite(blue)&&blue>=0;
+    public Color normalize(){
+        return new Color(Double.isNaN(red)||Double.isInfinite(red)?0:red,Double.isNaN(green)||Double.isInfinite(green)?0:green,Double.isNaN(blue)||Double.isInfinite(blue)?0:blue);
     }
 }

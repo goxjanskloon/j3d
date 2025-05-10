@@ -13,6 +13,6 @@ public class HittablePdf implements Pdf{
         return object.pdfValue(new Ray(origin,direction));
     }
     @Override public Vector generate(){
-        return object.randomOnSurface().sub(origin).unit();
+        return object.random(origin).unit();
     }
 }
