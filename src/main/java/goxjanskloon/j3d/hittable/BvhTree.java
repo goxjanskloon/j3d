@@ -3,6 +3,7 @@ import goxjanskloon.j3d.Aabb;
 import goxjanskloon.j3d.Ray;
 import goxjanskloon.j3d.Vector;
 import goxjanskloon.utils.Interval;
+import goxjanskloon.utils.Randoms;
 import java.util.List;
 public class BvhTree implements Hittable{
     public final Hittable left,right;
@@ -33,10 +34,18 @@ public class BvhTree implements Hittable{
         return aabb;
     }
     @Override public Vector random(Vector origin){
-        throw new UnsupportedOperationException();
+        if(left==null)
+            return right.random(origin);
+        if(right==null)
+            return left.random(origin);
+        return Randoms.nextDouble()<0.5?left.random(origin):right.random(origin);
     }
     @Override public double pdfValue(Ray ray){
-        throw new UnsupportedOperationException();
+        if(left==null)
+            return right.pdfValue(ray);
+        if(right==null)
+            return left.pdfValue(ray);
+        return (left.pdfValue(ray)+right.pdfValue(ray))/2;
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
         var leftHit=left==null?null:left.hit(ray,interval);

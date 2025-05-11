@@ -9,9 +9,9 @@ public class Vector{
     }
     public double get(Dimension d){
         return switch(d){
-            case X->x;
-            case Y->y;
-            case Z->z;
+        case X->x;
+        case Y->y;
+        case Z->z;
         };
     }
     public double dot(Vector v){
