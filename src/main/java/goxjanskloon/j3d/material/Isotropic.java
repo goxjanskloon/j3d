@@ -4,6 +4,7 @@ import goxjanskloon.j3d.hittable.HitRecord;
 import goxjanskloon.j3d.pdf.SpherePdf;
 import goxjanskloon.j3d.Vector;
 import goxjanskloon.j3d.texture.Texture;
+import goxjanskloon.utils.MathHelper;
 public class Isotropic implements Material{
     public final Texture texture;
     public Isotropic(Texture texture){
@@ -13,6 +14,6 @@ public class Isotropic implements Material{
         return new ScatterRecord(SpherePdf.INSTANCE,texture.color(hit.u,hit.v,hit.point));
     }
     @Override public double scatteringPdf(HitRecord hit,Vector scattered){
-        return 1/(4*Math.PI);
+        return MathHelper.I4PI;
     }
 }

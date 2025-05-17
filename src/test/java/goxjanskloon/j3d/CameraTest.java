@@ -31,7 +31,7 @@ public class CameraTest{
         world.add(light);
         final BvhTree bvhTree=new BvhTree(world);
         final Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
-        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,0.195,0),new Vector(0.195,0,0),1024,1024,50,5000,Color.BLACK,200);
+        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,0.195,0),new Vector(0.195,0,0),1024,1024,50,100,Color.BLACK,200);
         final Image image=camera.render();
         if(image!=null){
             try(FileWriter file=new FileWriter("CameraTest.balls().ppm")){

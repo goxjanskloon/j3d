@@ -3,7 +3,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import goxjanskloon.gfx.Color;
 import goxjanskloon.gfx.Image;
 import goxjanskloon.gfx.Rgb;
@@ -69,37 +68,24 @@ public class Camera{
     private class renderRunnable implements Runnable{
         private final int l,r;
         private final Rgb[][] p;
-        private final AtomicInteger total;
-        public renderRunnable(int i,Rgb[][] pixels,AtomicInteger total){
+        public renderRunnable(int i,Rgb[][] pixels){
             r=Math.min((l=i)+dWidth,width);
             p=pixels;
-            this.total=total;
         }
         @Override public void run(){
-            for(int i=0;i<height;++i){
+            for(int i=0;i<height;++i)
                 for(int j=l;j<r;++j)
                     p[i][j]=render(j,i).toRgb();
-                if((int)((i+1)*100.0/height)>(int)(i*100.0/height))
-                    logger.info((int)(i*100.0/height)+"% finished.");
-            }
-            var remain=total.decrementAndGet();
-            logger.info("Thread "+l/dWidth+" finished,"+remain+" thread"+(remain>1?"s":"")+" left.");
         }
     }
     public Image render(){
-        var image=new Image(new Rgb[height][width]);
-        var total=new AtomicInteger();
-        for(int i=0;i<width;i+=dWidth){
-            total.incrementAndGet();
-            threadPool.execute(new renderRunnable(i,image.pixels,total));
-            logger.info("Thread "+i/dWidth+" submitted.");
-        }
+        Image image=new Image(new Rgb[height][width]);
+        for(int i=0;i<width;i+=dWidth)
+            threadPool.execute(new renderRunnable(i,image.pixels));
         try{
             threadPool.shutdown();
-            if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS)){
-                logger.info("Rendering finished.");
+            if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS))
                 return image;
-            }
         }catch(InterruptedException e){
             logger.log(Level.ERROR,"Rendering interrupted.",e);
         }

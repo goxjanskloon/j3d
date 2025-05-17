@@ -19,7 +19,7 @@ public class Color{
         return new Color(red*scale,green*scale,blue*scale);
     }
     public Color div(double scale){
-        return new Color(red/scale,green/scale,blue/scale);
+        return scale(1/scale);
     }
     public Rgb toRgb(){
         var c=new Color(RANGE.clamp(Math.sqrt(red)),RANGE.clamp(Math.sqrt(green)),RANGE.clamp(Math.sqrt(blue))).scale(Rgb.MAX);

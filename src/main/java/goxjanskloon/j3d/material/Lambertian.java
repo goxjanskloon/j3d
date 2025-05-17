@@ -4,6 +4,7 @@ import goxjanskloon.j3d.hittable.HitRecord;
 import goxjanskloon.j3d.Vector;
 import goxjanskloon.j3d.pdf.CosinePdf;
 import goxjanskloon.j3d.texture.Texture;
+import goxjanskloon.utils.MathHelper;
 public class Lambertian implements Material{
     public final Texture texture;
     public Lambertian(Texture texture){
@@ -14,6 +15,6 @@ public class Lambertian implements Material{
     }
     @Override public double scatteringPdf(HitRecord hit,Vector scattered){
         double a=hit.normal.dot(scattered);
-        return a<0?0:a/Math.PI;
+        return a<0?0:a*MathHelper.IPI;
     }
 }
