@@ -24,11 +24,12 @@ public class Camera{
     public final Hittable world,light;
     public final Ray ray;
     public final Vector upDir,rightDir;
-    public final int width,height,maxDepth,samplesPerPixel,dWidth;
+    public final int width,height,maxDepth,samplesPerPixel,threads;
     public Color background;
-    private final int halfWidth,halfHeight;
+    private final int halfWidth,halfHeight,dHeight;
+    private final double iSPP;
     private final ExecutorService threadPool;
-    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int dWidth){
+    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int threads){
         this.world=world;
         this.light=light;
         this.ray=ray;
@@ -37,11 +38,10 @@ public class Camera{
         halfWidth=(this.width=width)>>1;
         halfHeight=(this.height=height)>>1;
         this.maxDepth=maxDepth;
-        this.samplesPerPixel=samplesPerPixel;
+        iSPP=1.0/(this.samplesPerPixel=samplesPerPixel);
         this.background=background;
-        this.dWidth=dWidth;
-        var threadNumber=width/dWidth+5;
-        threadPool=new ThreadPoolExecutor(threadNumber,threadNumber,Long.MAX_VALUE,TimeUnit.DAYS,new ArrayBlockingQueue<>(threadNumber));
+        dHeight=height/(this.threads=threads);
+        threadPool=new ThreadPoolExecutor(threads,threads,Long.MAX_VALUE,TimeUnit.DAYS,new ArrayBlockingQueue<>(threads));
     }
     public Color render(Ray ray,int depth){
         if(depth>maxDepth)
@@ -60,28 +60,41 @@ public class Camera{
         return render(new Ray(hit.point,scattered),depth+1).scale(scatter.attenuation).scale(hit.material.scatteringPdf(hit,scattered)/pdf.valueOf(scattered));
     }
     public Color render(int x,int y){
-        var s=Color.BLACK;
+        Color s=Color.BLACK;
         for(int i=0;i<samplesPerPixel;++i)
-            s=s.mix(render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1).normalize());
-        return s.div(samplesPerPixel);
+            s=s.mix(render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1).normalize().scale(iSPP));
+        return s;
     }
     private class renderRunnable implements Runnable{
-        private final int l,r;
+        private final int t;
         private final Rgb[][] p;
-        public renderRunnable(int i,Rgb[][] pixels){
-            r=Math.min((l=i)+dWidth,width);
+        private final ProgressIndicator g;
+        public renderRunnable(int t,Rgb[][] pixels,ProgressIndicator progress){
+            this.t=t;
             p=pixels;
+            g=progress;
         }
         @Override public void run(){
-            for(int i=0;i<height;++i)
-                for(int j=l;j<r;++j)
+            for(int i=dHeight*t,l=Math.min(i+dHeight,height);i<l;g.increment(),++i)
+                for(int j=0;j<width;++j)
                     p[i][j]=render(j,i).toRgb();
+        }
+    }
+    private static class ProgressIndicator{
+        private int current=0;
+        private final int goal;
+        public ProgressIndicator(int goal){
+            this.goal=goal;
+        }
+        synchronized public void increment(){
+            logger.info(String.format("Progress: %d/%d",++current,goal));
         }
     }
     public Image render(){
         Image image=new Image(new Rgb[height][width]);
-        for(int i=0;i<width;i+=dWidth)
-            threadPool.execute(new renderRunnable(i,image.pixels));
+        ProgressIndicator progress=new ProgressIndicator(width);
+        for(int t=0;t<threads;++t)
+            threadPool.execute(new renderRunnable(t,image.pixels,progress));
         try{
             threadPool.shutdown();
             if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS))

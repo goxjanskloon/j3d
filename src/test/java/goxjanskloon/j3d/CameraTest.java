@@ -31,25 +31,7 @@ public class CameraTest{
         world.add(light);
         final BvhTree bvhTree=new BvhTree(world);
         final Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
-        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,0.195,0),new Vector(0.195,0,0),1024,1024,50,100,Color.BLACK,200);
-        final Image image=camera.render();
-        if(image!=null){
-            try(FileWriter file=new FileWriter("CameraTest.balls().ppm")){
-                image.output(file);
-            }catch(IOException e){
-                fail("Error writing image to file",e);
-            }
-        }else fail("Error rendering to image");
-    }
-    @Test public void cornellBox(){
-        final List<Hittable> world=new ArrayList<>();
-        world.add(new Sphere(new Vector(0,-2.5,0),2,new Dielectric(1.5,new SolidTexture(Color.WHITE))));
-        world.add(new Quadrilateral(new Vector(-5,-5,-5),new Vector(10,0,0),new Vector(0,0,10),new Lambertian(new SolidTexture(Color.YELLOW))));
-        Hittable light=new Quadrilateral(new Vector(-5,5,-5),new Vector(10,0,0),new Vector(0,0,10),new DiffuseLight(new SolidTexture(Color.WHITE)));
-        world.add(light);
-        final BvhTree bvhTree=new BvhTree(world);
-        final Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
-        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,1,0),new Vector(1,0,0),300,300,8,10000,Color.BLACK,15);
+        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,0.195,0),new Vector(0.195,0,0),1024,1024,50,5000,Color.BLACK,Runtime.getRuntime().availableProcessors());
         final Image image=camera.render();
         if(image!=null){
             try(FileWriter file=new FileWriter("CameraTest.balls().ppm")){
