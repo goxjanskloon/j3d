@@ -76,11 +76,14 @@ public class Camera{
             this.total=total;
         }
         @Override public void run(){
-            for(int i=0;i<height;++i)
+            for(int i=0;i<height;++i){
                 for(int j=l;j<r;++j)
                     p[i][j]=render(j,i).toRgb();
+                if((int)((i+1)*100.0/height)>(int)(i*100.0/height))
+                    logger.info((int)(i*100.0/height)+"% finished.");
+            }
             var remain=total.decrementAndGet();
-            logger.log(Level.INFO,"Thread "+l/dWidth+" finished,"+remain+" thread"+(remain>1?"s":"")+" left.");
+            logger.info("Thread "+l/dWidth+" finished,"+remain+" thread"+(remain>1?"s":"")+" left.");
         }
     }
     public Image render(){
@@ -89,12 +92,12 @@ public class Camera{
         for(int i=0;i<width;i+=dWidth){
             total.incrementAndGet();
             threadPool.execute(new renderRunnable(i,image.pixels,total));
-            logger.log(Level.INFO,"Thread "+i/dWidth+" submitted.");
+            logger.info("Thread "+i/dWidth+" submitted.");
         }
         try{
             threadPool.shutdown();
             if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS)){
-                logger.log(Level.INFO,"Rendering finished.");
+                logger.info("Rendering finished.");
                 return image;
             }
         }catch(InterruptedException e){

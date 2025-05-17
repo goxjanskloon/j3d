@@ -13,6 +13,6 @@ public class Isotropic implements Material{
         return new ScatterRecord(SpherePdf.INSTANCE,texture.color(hit.u,hit.v,hit.point));
     }
     @Override public double scatteringPdf(HitRecord hit,Vector scattered){
-        return Material.super.scatteringPdf(hit,scattered);
+        return 1/(4*Math.PI);
     }
 }
