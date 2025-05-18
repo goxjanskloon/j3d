@@ -1,5 +1,4 @@
-*.ppm
-*.log*
+*.png
 
 target/
 !.mvn/wrapper/maven-wrapper.jar

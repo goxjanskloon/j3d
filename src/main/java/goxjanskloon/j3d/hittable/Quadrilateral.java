@@ -4,7 +4,7 @@ import goxjanskloon.j3d.Ray;
 import goxjanskloon.j3d.Vector;
 import goxjanskloon.j3d.material.Material;
 import goxjanskloon.utils.Interval;
-import goxjanskloon.utils.Randoms;
+import goxjanskloon.utils.MathHelper;
 public class Quadrilateral implements Hittable{
     public final Vector origin,u,v,normal;
     private final Vector w;
@@ -42,7 +42,7 @@ public class Quadrilateral implements Hittable{
         return new HitRecord(p,ray,normal,t,a,b,material);
     }
     @Override public Vector random(Vector origin){
-        return this.origin.add(u.mul(Randoms.nextDouble())).add(v.mul(Randoms.nextDouble())).sub(origin);
+        return this.origin.add(u.mul(MathHelper.nextDouble())).add(v.mul(MathHelper.nextDouble())).sub(origin);
     }
     @Override public double pdfValue(Ray ray){
         HitRecord record=hit(ray,Hittable.HIT_RANGE);

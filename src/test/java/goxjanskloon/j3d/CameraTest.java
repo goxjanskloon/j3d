@@ -1,6 +1,5 @@
 package goxjanskloon.j3d;
 import goxjanskloon.gfx.Color;
-import goxjanskloon.gfx.Image;
 import goxjanskloon.j3d.hittable.BvhTree;
 import goxjanskloon.j3d.hittable.Hittable;
 import goxjanskloon.j3d.hittable.Quadrilateral;
@@ -10,7 +9,9 @@ import goxjanskloon.j3d.material.Lambertian;
 import goxjanskloon.j3d.material.DiffuseLight;
 import goxjanskloon.j3d.texture.SolidTexture;
 import org.junit.jupiter.api.Test;
-import java.io.FileWriter;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +30,13 @@ public class CameraTest{
         world.add(new Quadrilateral(new Vector(-5,5,5),new Vector(0,-10,0),new Vector(10,0,0),new Lambertian(new SolidTexture(Color.GREEN))));
         Hittable light=new Quadrilateral(new Vector(-5,5,-5),new Vector(10,0,0),new Vector(0,0,10),new DiffuseLight(new SolidTexture(Color.WHITE.scale(2))));
         world.add(light);
-        final BvhTree bvhTree=new BvhTree(world);
-        final Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
-        final Camera camera=new Camera(bvhTree,light,ray,new Vector(0,0.195,0),new Vector(0.195,0,0),1024,1024,50,5000,Color.BLACK,Runtime.getRuntime().availableProcessors());
-        final Image image=camera.render();
+        BvhTree bvhTree=new BvhTree(world);
+        Ray ray=new Ray(new Vector(0,0,-20),new Vector(0,0,300));
+        Camera camera=new Camera(bvhTree,light,ray,new Vector(0,0.195,0),new Vector(0.195,0,0),1024,1024,20,500,Color.BLACK,Runtime.getRuntime().availableProcessors(),false);
+        BufferedImage image=camera.render();
         if(image!=null){
-            try(FileWriter file=new FileWriter("CameraTest.balls().ppm")){
-                image.output(file);
+            try{
+                ImageIO.write(image,"PNG",new File("CameraTest.balls().png"));
             }catch(IOException e){
                 fail("Error writing image to file",e);
             }

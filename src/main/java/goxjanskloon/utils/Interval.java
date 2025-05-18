@@ -25,7 +25,7 @@ public class Interval{
         return new Interval(Math.min(min,other.min),Math.max(max,other.max));
     }
     public double random(){
-        return Randoms.nextDouble(this);
+        return MathHelper.nextDouble(this);
     }
     public Interval move(double a){
         return new Interval(min+a,max+a);

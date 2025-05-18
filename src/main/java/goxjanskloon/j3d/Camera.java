@@ -1,11 +1,11 @@
 package goxjanskloon.j3d;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import goxjanskloon.gfx.Color;
-import goxjanskloon.gfx.Image;
-import goxjanskloon.gfx.Rgb;
 import goxjanskloon.j3d.hittable.HitRecord;
 import goxjanskloon.j3d.hittable.Hittable;
 import goxjanskloon.j3d.material.ScatterRecord;
@@ -29,7 +29,8 @@ public class Camera{
     private final int halfWidth,halfHeight,dHeight;
     private final double iSPP;
     private final ExecutorService threadPool;
-    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int threads){
+    public final boolean log;
+    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int threads,boolean log){
         this.world=world;
         this.light=light;
         this.ray=ray;
@@ -42,6 +43,7 @@ public class Camera{
         this.background=background;
         dHeight=height/(this.threads=threads);
         threadPool=new ThreadPoolExecutor(threads,threads,Long.MAX_VALUE,TimeUnit.DAYS,new ArrayBlockingQueue<>(threads));
+        this.log=log;
     }
     public Color render(Ray ray,int depth){
         if(depth>maxDepth)
@@ -67,36 +69,52 @@ public class Camera{
     }
     private class renderRunnable implements Runnable{
         private final int t;
-        private final Rgb[][] p;
-        private final ProgressIndicator g;
-        public renderRunnable(int t,Rgb[][] pixels,ProgressIndicator progress){
+        private final BufferedImage img;
+        private final ProgressIndicator progress;
+        public renderRunnable(int t,BufferedImage img,ProgressIndicator progress){
             this.t=t;
-            p=pixels;
-            g=progress;
+            this.img=img;
+            this.progress=progress;
         }
         @Override public void run(){
-            for(int i=dHeight*t,l=Math.min(i+dHeight,height);i<l;g.increment(),++i)
+            for(int i=dHeight*t,l=Math.min(i+dHeight,height);i<l;progress.increment(),++i)
                 for(int j=0;j<width;++j)
-                    p[i][j]=render(j,i).toRgb();
+                    img.setRGB(j,i,render(j,i).toRgb());
         }
     }
     private static class ProgressIndicator{
-        private int current=0;
+        private final AtomicInteger current=new AtomicInteger(0);
         private final int goal;
         public ProgressIndicator(int goal){
             this.goal=goal;
         }
-        synchronized public void increment(){
-            logger.info(String.format("Progress: %d/%d",++current,goal));
+        public void increment(){
+            logger.info(String.format("Progress: %d/%d",current.incrementAndGet(),goal));
         }
     }
-    public Image render(){
-        Image image=new Image(new Rgb[height][width]);
-        ProgressIndicator progress=new ProgressIndicator(width);
-        for(int t=0;t<threads;++t)
-            threadPool.execute(new renderRunnable(t,image.pixels,progress));
+    private class renderRunnableNoLog implements Runnable{
+        private final int t;
+        private final BufferedImage img;
+        public renderRunnableNoLog(int t,BufferedImage img){
+            this.t=t;
+            this.img=img;
+        }
+        @Override public void run(){
+            for(int i=dHeight*t,l=Math.min(i+dHeight,height);i<l;++i)
+                for(int j=0;j<width;++j)
+                    img.setRGB(j,i,render(j,i).toRgb());
+        }
+    }
+    public BufferedImage render(){
+        BufferedImage image=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+        if(log){
+            ProgressIndicator progress=new ProgressIndicator(width);
+            for(int t=0;t<threads;++t)
+                threadPool.execute(new renderRunnable(t,image,progress));
+        }else for(int t=0;t<threads;++t)
+            threadPool.execute(new renderRunnableNoLog(t,image));
+        threadPool.shutdown();
         try{
-            threadPool.shutdown();
             if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS))
                 return image;
         }catch(InterruptedException e){

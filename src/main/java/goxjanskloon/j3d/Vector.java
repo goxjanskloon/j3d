@@ -1,6 +1,5 @@
 package goxjanskloon.j3d;
 import goxjanskloon.utils.MathHelper;
-import goxjanskloon.utils.Randoms;
 public class Vector{
     public final double x,y,z;
     public Vector(double x,double y,double z){
@@ -59,7 +58,7 @@ public class Vector{
         return mul(cos).add(axis.mul(1-cos).mul(dot(axis))).add(axis.cross(this).mul(Math.sin(angle)));
     }
     public static Vector randomUnit(){
-        double a=Randoms.nextDouble(0,MathHelper.C2PI),b=Randoms.nextDouble(),c=2*Math.sqrt(b*(1-b));
+        double a=MathHelper.nextDouble(0,MathHelper.C2PI),b=MathHelper.nextDouble(),c=2*Math.sqrt(b*(1-b));
         return new Vector(Math.cos(a)*c,Math.sin(a)*c,1-2*b);
     }
     public static Vector randomOnHemisphere(Vector normal){
@@ -69,14 +68,14 @@ public class Vector{
         return v.neg();
     }
     public static Vector cosineOnHemisphere(Vector normal){
-        var a=Randoms.nextDouble(0,MathHelper.C2PI);
-        var b=Randoms.nextDouble();
+        var a=MathHelper.nextDouble(0,MathHelper.C2PI);
+        var b=MathHelper.nextDouble();
         var c=Math.sqrt(b);
         return new Onb(normal).transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }
     public static Vector cosineOnHemisphere(Onb onb){
-        var a=Randoms.nextDouble(0,MathHelper.C2PI);
-        var b=Randoms.nextDouble();
+        var a=MathHelper.nextDouble(0,MathHelper.C2PI);
+        var b=MathHelper.nextDouble();
         var c=Math.sqrt(b);
         return onb.transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
     }

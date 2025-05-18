@@ -3,7 +3,7 @@ import goxjanskloon.j3d.Aabb;
 import goxjanskloon.j3d.Ray;
 import goxjanskloon.j3d.Vector;
 import goxjanskloon.utils.Interval;
-import goxjanskloon.utils.Randoms;
+import goxjanskloon.utils.MathHelper;
 import java.util.List;
 public class BvhTree implements Hittable{
     public final Hittable left,right;
@@ -38,7 +38,7 @@ public class BvhTree implements Hittable{
             return right.random(origin);
         if(right==null)
             return left.random(origin);
-        return Randoms.nextDouble()<0.5?left.random(origin):right.random(origin);
+        return MathHelper.nextDouble()<0.5?left.random(origin):right.random(origin);
     }
     @Override public double pdfValue(Ray ray){
         if(left==null)

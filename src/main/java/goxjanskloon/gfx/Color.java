@@ -21,9 +21,9 @@ public class Color{
     public Color div(double scale){
         return scale(1/scale);
     }
-    public Rgb toRgb(){
-        Color c=new Color(RANGE.clamp(Math.sqrt(red)),RANGE.clamp(Math.sqrt(green)),RANGE.clamp(Math.sqrt(blue))).scale(Rgb.MAX);
-        return new Rgb((int)c.red,(int)c.green,(int)c.blue);
+    public int toRgb(){
+        Color c=new Color(RANGE.clamp(Math.sqrt(red)),RANGE.clamp(Math.sqrt(green)),RANGE.clamp(Math.sqrt(blue))).scale(255);
+        return (((int)c.red)<<16)|(((int)c.green)<<8)|(int)c.blue;
     }
     public Color normalize(){
         return new Color(Double.isNaN(red)||Double.isInfinite(red)?0:red,Double.isNaN(green)||Double.isInfinite(green)?0:green,Double.isNaN(blue)||Double.isInfinite(blue)?0:blue);
