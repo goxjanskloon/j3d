@@ -9,6 +9,11 @@ public class Color{
         this.green=green;
         this.blue=blue;
     }
+    public Color(int rgb){
+        red=((rgb&0xff0000)>>16)/255.0;
+        green=((rgb&0xff00)>>8)/255.0;
+        blue=(rgb&0xff)/255.0;
+    }
     public Color mix(Color other){
         return new Color(red+other.red,green+other.green,blue+other.blue);
     }
