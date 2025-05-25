@@ -7,11 +7,16 @@ public class Vector{
         this.y=y;
         this.z=z;
     }
+    public Vector(int xyz){
+        x=((xyz&0xff0000)>>15)/255.0-1;
+        y=((xyz&0xff00)>>7)/255.0-1;
+        z=((xyz&0xff)<<1)/255.0-1;
+    }
     public double get(Dimension d){
         return switch(d){
-        case X->x;
-        case Y->y;
-        case Z->z;
+            case X->x;
+            case Y->y;
+            case Z->z;
         };
     }
     public double dot(Vector v){

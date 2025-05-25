@@ -16,6 +16,9 @@ import goxjanskloon.utils.Interval;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
+import javax.swing.WindowConstants;
 public class Camera{
     private static final Logger logger=Logger.getLogger(Camera.class);
     static{
@@ -84,12 +87,12 @@ public class Camera{
     }
     private static class ProgressIndicator{
         private final AtomicInteger current=new AtomicInteger(0);
-        private final int goal;
-        public ProgressIndicator(int goal){
-            this.goal=goal;
+        private final JProgressBar progressBar;
+        public ProgressIndicator(JProgressBar progressBar){
+            this.progressBar=progressBar;
         }
         public void increment(){
-            logger.info(String.format("Progress: %d/%d",current.incrementAndGet(),goal));
+            progressBar.setValue(current.incrementAndGet());
         }
     }
     private class renderRunnableNoLog implements Runnable{
@@ -107,8 +110,16 @@ public class Camera{
     }
     public BufferedImage render(){
         BufferedImage image=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+        JFrame frame=new JFrame();
+        frame.setTitle("Rendering on "+this);
+        frame.setSize(400,100);
+        JProgressBar progressBar=new JProgressBar(0,height);
+        progressBar.setValue(0);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.getContentPane().add(progressBar);
+        frame.setVisible(true);
         if(log){
-            ProgressIndicator progress=new ProgressIndicator(width);
+            ProgressIndicator progress=new ProgressIndicator(progressBar);
             for(int t=0;t<threads;++t)
                 threadPool.execute(new renderRunnable(t,image,progress));
         }else for(int t=0;t<threads;++t)

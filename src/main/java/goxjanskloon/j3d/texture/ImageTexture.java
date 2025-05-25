@@ -5,9 +5,10 @@ import java.awt.image.BufferedImage;
 public class ImageTexture implements Texture{
     public final Color[][] colors;
     public ImageTexture(BufferedImage image){
-        colors=new Color[image.getWidth()][image.getHeight()];
-        for(int i=0;i<image.getWidth();++i)
-            for(int j=0;j<image.getHeight();++j)
+        int w=image.getWidth(),h=image.getHeight();
+        colors=new Color[w][h];
+        for(int i=0;i<w;++i)
+            for(int j=0;j<h;++j)
                 colors[i][j]=new Color(image.getRGB(i,j));
     }
     @Override public Color color(double u,double v,Vector point){
