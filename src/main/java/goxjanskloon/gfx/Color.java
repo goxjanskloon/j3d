@@ -1,5 +1,6 @@
 package goxjanskloon.gfx;
 import goxjanskloon.utils.Interval;
+import net.jafama.FastMath;
 public class Color{
     public final double red,green,blue;
     public static final Interval RANGE=new Interval(0,1);
@@ -27,7 +28,7 @@ public class Color{
         return scale(1/scale);
     }
     public int toRgb(){
-        Color c=new Color(RANGE.clamp(Math.sqrt(red)),RANGE.clamp(Math.sqrt(green)),RANGE.clamp(Math.sqrt(blue))).scale(255);
+        Color c=new Color(RANGE.clamp(FastMath.sqrt(red)),RANGE.clamp(FastMath.sqrt(green)),RANGE.clamp(FastMath.sqrt(blue))).scale(255);
         return (((int)c.red)<<16)|(((int)c.green)<<8)|(int)c.blue;
     }
     public Color normalize(){

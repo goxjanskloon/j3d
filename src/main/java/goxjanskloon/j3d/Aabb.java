@@ -1,5 +1,6 @@
 package goxjanskloon.j3d;
 import goxjanskloon.utils.Interval;
+import net.jafama.FastMath;
 public class Aabb{
     public final Interval x,y,z;
     public static final Aabb empty=new Aabb(Interval.EMPTY,Interval.EMPTY,Interval.EMPTY);
@@ -9,9 +10,9 @@ public class Aabb{
         this.z=z;
     }
     public Aabb(Vector a,Vector b){
-        x=new Interval(Math.min(a.x,b.x),Math.max(a.x,b.x));
-        y=new Interval(Math.min(a.y,b.y),Math.max(a.y,b.y));
-        z=new Interval(Math.min(a.z,b.z),Math.max(a.z,b.z));
+        x=new Interval(FastMath.min(a.x,b.x),FastMath.max(a.x,b.x));
+        y=new Interval(FastMath.min(a.y,b.y),FastMath.max(a.y,b.y));
+        z=new Interval(FastMath.min(a.z,b.z),FastMath.max(a.z,b.z));
     }
     public Interval get(Dimension d){
         return switch(d){

@@ -4,6 +4,7 @@ import goxjanskloon.j3d.Vector;
 import goxjanskloon.j3d.hittable.HitRecord;
 import goxjanskloon.j3d.texture.Texture;
 import goxjanskloon.utils.MathHelper;
+import net.jafama.FastMath;
 public class Dielectric implements Material{
     public final double refraction,iRefraction,reflectance,iReflectance;
     public final Texture texture;
@@ -15,7 +16,7 @@ public class Dielectric implements Material{
         this.texture=texture;
     }
     @Override public ScatterRecord scatter(Ray ray,HitRecord hit){
-        double r=hit.frontFace?iRefraction:refraction,c=Math.min(ray.direction.neg().dot(hit.normal),1),a=hit.frontFace?iReflectance:reflectance;
-        return new ScatterRecord(null,texture.color(hit.u,hit.v,hit.point),r*Math.sqrt(1-c*c)>1||a+(1-a)*Math.pow(1-c,5)>MathHelper.nextDouble()?Vector.reflect(ray.direction,hit.normal):Vector.refract(ray.direction,hit.normal,r));
+        double r=hit.frontFace?iRefraction:refraction,c=FastMath.min(ray.direction.neg().dot(hit.normal),1),a=hit.frontFace?iReflectance:reflectance;
+        return new ScatterRecord(null,texture.color(hit.u,hit.v,hit.point),r*FastMath.sqrt(1-c*c)>1||a+(1-a)*FastMath.pow(1-c,5)>MathHelper.nextDouble()?Vector.reflect(ray.direction,hit.normal):Vector.refract(ray.direction,hit.normal,r));
     }
 }

@@ -1,5 +1,6 @@
 package goxjanskloon.j3d;
 import goxjanskloon.utils.MathHelper;
+import net.jafama.FastMath;
 public class Vector{
     public final double x,y,z;
     public Vector(double x,double y,double z){
@@ -50,7 +51,7 @@ public class Vector{
         return dot(this);
     }
     public double norm(){
-        return Math.sqrt(selfDot());
+        return FastMath.sqrt(selfDot());
     }
     public Vector unit(){
         return div(norm());
@@ -59,12 +60,12 @@ public class Vector{
         return sub(axis.origin).rotate(axis.direction,angle).add(axis.origin);
     }
     public Vector rotate(Vector axis,double angle){
-        var cos=Math.cos(angle);
-        return mul(cos).add(axis.mul(1-cos).mul(dot(axis))).add(axis.cross(this).mul(Math.sin(angle)));
+        var cos=FastMath.cos(angle);
+        return mul(cos).add(axis.mul(1-cos).mul(dot(axis))).add(axis.cross(this).mul(FastMath.sin(angle)));
     }
     public static Vector randomUnit(){
-        double a=MathHelper.nextDouble(0,MathHelper.C2PI),b=MathHelper.nextDouble(),c=2*Math.sqrt(b*(1-b));
-        return new Vector(Math.cos(a)*c,Math.sin(a)*c,1-2*b);
+        double a=MathHelper.nextDouble(0,MathHelper.C2PI),b=MathHelper.nextDouble(),c=2*FastMath.sqrt(b*(1-b));
+        return new Vector(FastMath.cos(a)*c,FastMath.sin(a)*c,1-2*b);
     }
     public static Vector randomOnHemisphere(Vector normal){
         var v=randomUnit();
@@ -75,20 +76,20 @@ public class Vector{
     public static Vector cosineOnHemisphere(Vector normal){
         var a=MathHelper.nextDouble(0,MathHelper.C2PI);
         var b=MathHelper.nextDouble();
-        var c=Math.sqrt(b);
-        return new Onb(normal).transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
+        var c=FastMath.sqrt(b);
+        return new Onb(normal).transform(new Vector(FastMath.cos(a)*c,FastMath.sin(a)*c,FastMath.sqrt(1-b)));
     }
     public static Vector cosineOnHemisphere(Onb onb){
         var a=MathHelper.nextDouble(0,MathHelper.C2PI);
         var b=MathHelper.nextDouble();
-        var c=Math.sqrt(b);
-        return onb.transform(new Vector(Math.cos(a)*c,Math.sin(a)*c,Math.sqrt(1-b)));
+        var c=FastMath.sqrt(b);
+        return onb.transform(new Vector(FastMath.cos(a)*c,FastMath.sin(a)*c,FastMath.sqrt(1-b)));
     }
     public static Vector reflect(Vector v,Vector normal){
         return v.sub(normal.mul(v.dot(normal)*2));
     }
     public static Vector refract(Vector uv,Vector normal,double eoe){
-        var pe=normal.mul(Math.min(-uv.dot(normal),1)).add(uv).mul(eoe);
-        return normal.mul(-Math.sqrt(Math.abs(1-pe.selfDot()))).add(pe);
+        var pe=normal.mul(FastMath.min(-uv.dot(normal),1)).add(uv).mul(eoe);
+        return normal.mul(-FastMath.sqrt(FastMath.abs(1-pe.selfDot()))).add(pe);
     }
 }

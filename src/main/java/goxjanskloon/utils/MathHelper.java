@@ -1,7 +1,8 @@
 package goxjanskloon.utils;
+import net.jafama.FastMath;
 import java.util.concurrent.ThreadLocalRandom;
 public interface MathHelper{
-    double C2PI=2*Math.PI,IPI=1/Math.PI,I2PI=1/(2*Math.PI),I4PI=1/(4*Math.PI);
+    double C2PI=2*FastMath.PI,C4PI=4*FastMath.PI,IPI=1/FastMath.PI,I2PI=1/C2PI,I4PI=1/C4PI;
     static double nextDouble(){
         return ThreadLocalRandom.current().nextDouble();
     }
