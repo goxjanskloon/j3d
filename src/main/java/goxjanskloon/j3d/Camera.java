@@ -29,11 +29,10 @@ public class Camera{
     public final Vector upDir,rightDir;
     public final int width,height,maxDepth,samplesPerPixel,threads;
     public Color background;
-    private final int halfWidth,halfHeight,dHeight;
+    private final int halfWidth,halfHeight;
     private final double iSPP;
     private final ExecutorService threadPool;
-    public final boolean log;
-    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int threads,boolean log){
+    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int threads){
         this.world=world;
         this.light=light;
         this.ray=ray;
@@ -44,9 +43,8 @@ public class Camera{
         this.maxDepth=maxDepth;
         iSPP=1.0/(this.samplesPerPixel=samplesPerPixel);
         this.background=background;
-        dHeight=height/(this.threads=threads);
+        this.threads=threads;
         threadPool=new ThreadPoolExecutor(threads,threads,Long.MAX_VALUE,TimeUnit.DAYS,new ArrayBlockingQueue<>(threads));
-        this.log=log;
     }
     public Color render(Ray ray,int depth){
         if(depth>maxDepth)
@@ -70,42 +68,36 @@ public class Camera{
             s=s.mix(render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1).normalize().scale(iSPP));
         return s;
     }
-    private class renderRunnable implements Runnable{
-        private final int t;
+    private class Worker implements Runnable{
         private final BufferedImage img;
-        private final ProgressIndicator progress;
-        public renderRunnable(int t,BufferedImage img,ProgressIndicator progress){
-            this.t=t;
+        private final Progress progress;
+        public Worker(BufferedImage img,Progress progress){
             this.img=img;
             this.progress=progress;
         }
         @Override public void run(){
-            for(int i=dHeight*t,l=Math.min(i+dHeight,height);i<l;progress.increment(),++i)
-                for(int j=0;j<width;++j)
-                    img.setRGB(j,i,render(j,i).toRgb());
+            while(true){
+                int c=progress.nextColumn();
+                if(c!=-1)
+                    for(int i=0;i<width;++i)
+                        img.setRGB(i,c,render(i,c).toRgb());
+                else break;
+            }
         }
     }
-    private static class ProgressIndicator{
-        private final AtomicInteger current=new AtomicInteger(0);
+    private class Progress{
+        private final AtomicInteger current=new AtomicInteger(-1);
         private final JProgressBar progressBar;
-        public ProgressIndicator(JProgressBar progressBar){
+        public Progress(JProgressBar progressBar){
             this.progressBar=progressBar;
         }
-        public void increment(){
-            progressBar.setValue(current.incrementAndGet());
-        }
-    }
-    private class renderRunnableNoLog implements Runnable{
-        private final int t;
-        private final BufferedImage img;
-        public renderRunnableNoLog(int t,BufferedImage img){
-            this.t=t;
-            this.img=img;
-        }
-        @Override public void run(){
-            for(int i=dHeight*t,l=Math.min(i+dHeight,height);i<l;++i)
-                for(int j=0;j<width;++j)
-                    img.setRGB(j,i,render(j,i).toRgb());
+        public int nextColumn(){
+            int cur=current.incrementAndGet();
+            if(cur>=height)
+                return -1;
+            progressBar.setValue(cur);
+            progressBar.setString(String.format("%.2f%% %d/%d",cur*100.0/height,cur,height));
+            return cur;
         }
     }
     public BufferedImage render(){
@@ -115,15 +107,13 @@ public class Camera{
         frame.setSize(400,100);
         JProgressBar progressBar=new JProgressBar(0,height);
         progressBar.setValue(0);
+        progressBar.setStringPainted(true);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.getContentPane().add(progressBar);
+        frame.add(progressBar);
         frame.setVisible(true);
-        if(log){
-            ProgressIndicator progress=new ProgressIndicator(progressBar);
-            for(int t=0;t<threads;++t)
-                threadPool.execute(new renderRunnable(t,image,progress));
-        }else for(int t=0;t<threads;++t)
-            threadPool.execute(new renderRunnableNoLog(t,image));
+        Progress progress=new Progress(progressBar);
+        for(int i=0;i<threads;++i)
+            threadPool.execute(new Worker(image,progress));
         threadPool.shutdown();
         try{
             if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS))

@@ -7,6 +7,7 @@ import goxjanskloon.j3d.hittable.Sphere;
 import goxjanskloon.j3d.material.Dielectric;
 import goxjanskloon.j3d.material.DiffuseLight;
 import goxjanskloon.j3d.material.LambertianWithNormalMap;
+import goxjanskloon.j3d.material.Material;
 import goxjanskloon.j3d.texture.ImageTexture;
 import goxjanskloon.j3d.texture.SolidTexture;
 import goxjanskloon.j3d.texture.Texture;
@@ -19,7 +20,7 @@ import java.util.Objects;
 public class CameraTest{
     @Test public void balls() throws IOException{
         ArrayList<Hittable> world=new ArrayList<>(9);
-        var glass=new Dielectric(1.5,new SolidTexture(Color.WHITE));
+        Material glass=new Dielectric(1.5,new SolidTexture(Color.WHITE));
         world.add(new Sphere(new Vector(-2.5,-3,0),2,new LambertianWithNormalMap(
             new ImageTexture(ImageIO.read(Objects.requireNonNull(CameraTest.class.getResourceAsStream("earth.jpg")))),
             ImageIO.read(Objects.requireNonNull(CameraTest.class.getResourceAsStream("earth-normal.jpg"))))));
@@ -37,8 +38,8 @@ public class CameraTest{
        ImageIO.write(new Camera(new BvhTree(world),light,
            new Ray(new Vector(0,0,-20),new Vector(0,0,300)),
            new Vector(0,0.195,0),new Vector(0.195,0,0),
-           1024,1024,50,5000,Color.BLACK,
-           Runtime.getRuntime().availableProcessors(),true)
+           1024,1024,50,1000,Color.BLACK,
+           Runtime.getRuntime().availableProcessors())
            .render(),"PNG",new File("CameraTest.balls().png"));
     }
 }

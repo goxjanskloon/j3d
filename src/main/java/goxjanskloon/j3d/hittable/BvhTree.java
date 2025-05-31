@@ -50,8 +50,10 @@ public class BvhTree implements Hittable{
     @Override public HitRecord hit(Ray ray,Interval interval){
         var leftHit=left==null?null:left.hit(ray,interval);
         var rightHit=right==null?null:right.hit(ray,interval);
-        if(leftHit==null) return rightHit;
-        if(rightHit==null) return leftHit;
+        if(leftHit==null)
+            return rightHit;
+        if(rightHit==null)
+            return leftHit;
         return leftHit.distance<rightHit.distance?leftHit:rightHit;
     }
 }
