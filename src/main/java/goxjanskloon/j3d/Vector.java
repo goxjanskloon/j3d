@@ -89,7 +89,7 @@ public class Vector{
         return v.sub(normal.mul(v.dot(normal)*2));
     }
     public static Vector refract(Vector uv,Vector normal,double eoe){
-        var pe=normal.mul(FastMath.min(-uv.dot(normal),1)).add(uv).mul(eoe);
-        return normal.mul(-FastMath.sqrt(FastMath.abs(1-pe.selfDot()))).add(pe);
+        var pe=normal.mul(Math.min(-uv.dot(normal),1)).add(uv).mul(eoe);
+        return normal.mul(-FastMath.sqrt(Math.abs(1-pe.selfDot()))).add(pe);
     }
 }

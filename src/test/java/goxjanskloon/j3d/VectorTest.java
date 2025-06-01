@@ -1,5 +1,4 @@
 package goxjanskloon.j3d;
-import net.jafama.FastMath;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,7 +12,7 @@ public class VectorTest{
     @Test void dot(){
         Vector a=new Vector(1.3,-2.4,0.7),b=new Vector(2.6,-3.6,-6.2);
         double c=a.dot(b);
-        assertTrue(FastMath.abs(c-7.68)<1e-5);
+        assertTrue(Math.abs(c-7.68)<1e-5);
     }
     @Test void cross(){
         Vector a=new Vector(1.3,-2.4,0.7),b=new Vector(2.6,-3.6,-6.2),c=a.cross(b);
@@ -49,11 +48,11 @@ public class VectorTest{
     }
     @Test void selfDot(){
         Vector a=new Vector(1.3,-2.4,0.7);
-        assertTrue(FastMath.abs(a.selfDot()-7.94)<1e-5);
+        assertTrue(Math.abs(a.selfDot()-7.94)<1e-5);
     }
     @Test void norm(){
         Vector a=new Vector(1.3,-2.4,0.7);
-        assertTrue(FastMath.abs(a.norm()-2.817800560721)<1e-5);
+        assertTrue(Math.abs(a.norm()-2.817800560721)<1e-5);
     }
     @Test void unit(){
         Vector a=new Vector(1.3,-2.4,0.7),b=a.unit().sub(new Vector(0.4613527366,-0.8517281292,0.2484207043));

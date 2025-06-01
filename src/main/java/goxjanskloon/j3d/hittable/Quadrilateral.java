@@ -5,7 +5,6 @@ import goxjanskloon.j3d.Vector;
 import goxjanskloon.j3d.material.Material;
 import goxjanskloon.utils.Interval;
 import goxjanskloon.utils.MathHelper;
-import net.jafama.FastMath;
 public class Quadrilateral implements Hittable{
     public final Vector origin,u,v,normal;
     private final Vector w;
@@ -28,7 +27,7 @@ public class Quadrilateral implements Hittable{
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
         double d=normal.dot(ray.direction);
-        if(FastMath.abs(d)<1e-8)
+        if(Math.abs(d)<1e-8)
             return null;
         double t=(D-ray.origin.dot(normal))/d;
         if(!interval.contains(t))
@@ -49,6 +48,6 @@ public class Quadrilateral implements Hittable{
         HitRecord record=hit(ray,Hittable.HIT_RANGE);
         if(record==null)
             return 0;
-        return record.distance*record.distance/(FastMath.abs(ray.direction.dot(record.normal))*area);
+        return record.distance*record.distance/(Math.abs(ray.direction.dot(record.normal))*area);
     }
 }

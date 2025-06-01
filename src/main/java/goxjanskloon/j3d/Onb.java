@@ -1,5 +1,4 @@
 package goxjanskloon.j3d;
-import net.jafama.FastMath;
 public class Onb{
     public final Vector u,v,w;
     public Onb(Vector u,Vector v,Vector w){
@@ -9,7 +8,7 @@ public class Onb{
     }
     public Onb(Vector normal){
         w=normal;
-        var a=FastMath.abs(w.x)>.9?new Vector(0,1,0):new Vector(1,0,0);
+        var a=Math.abs(w.x)>.9?new Vector(0,1,0):new Vector(1,0,0);
         v=a.cross(w).unit();
         u=w.cross(v);
     }

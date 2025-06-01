@@ -25,7 +25,7 @@ public class Sphere implements Hittable{
             t+=sd*2;
         if(interval.contains(t)){
             Vector point=ray.at(t),n=point.sub(center).mul(iRadius);
-            return new HitRecord(point,ray,n,t,(FastMath.atan2(-n.z,n.x)+FastMath.PI)*MathHelper.I2PI,FastMath.acos(-n.y)*MathHelper.IPI,material);
+            return new HitRecord(point,ray,n,t,(FastMath.atan2(-n.z,n.x)+Math.PI)*MathHelper.I2PI,FastMath.acos(-n.y)*MathHelper.IPI,material);
         }else return null;
     }
     @Override public Aabb getAabb(){
