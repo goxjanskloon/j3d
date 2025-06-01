@@ -18,7 +18,7 @@ public class BvhTreeTest{
         bvhTree=new BvhTree(objects);
     }
     @Test public void hit(){
-        final Ray r1=new Ray(new Vector(0,0,-1),new Vector(0,1.5,0));
+        Ray r1=new Ray(new Vector(0,0,-1),new Vector(0,1.5,0));
         assertNotNull(objects.getFirst().hit(r1,Interval.UNIVERSE));
         assertNotNull(bvhTree.hit(r1,Interval.UNIVERSE));
         assertNotNull(bvhTree.hit(new Ray(new Vector(0,0,-1),new Vector(0,-1.5,0)),Interval.UNIVERSE));

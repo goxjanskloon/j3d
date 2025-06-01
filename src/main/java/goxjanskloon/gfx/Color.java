@@ -27,6 +27,10 @@ public class Color{
     public Color div(double scale){
         return scale(1/scale);
     }
+    public double diff(Color c){
+        double r=red-c.red,g=green-c.green,b=blue-c.blue;
+        return FastMath.sqrt(r*r+g*g+b*b);
+    }
     public int toRgb(){
         Color c=new Color(RANGE.clamp(FastMath.sqrt(red)),RANGE.clamp(FastMath.sqrt(green)),RANGE.clamp(FastMath.sqrt(blue))).scale(255);
         return (((int)c.red)<<16)|(((int)c.green)<<8)|(int)c.blue;

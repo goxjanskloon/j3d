@@ -27,12 +27,12 @@ public class Camera{
     public final Hittable world,light;
     public final Ray ray;
     public final Vector upDir,rightDir;
-    public final int width,height,maxDepth,samplesPerPixel,threads;
+    public final int width,height,maxDepth,threads,minSSP,maxSSP;
     public Color background;
     private final int halfWidth,halfHeight;
-    private final double iSPP;
+    public final double samplingThreshold;
     private final ExecutorService threadPool;
-    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int samplesPerPixel,Color background,int threads){
+    public Camera(Hittable world,Hittable light,Ray ray,Vector upDir,Vector rightDir,int width,int height,int maxDepth,int minSSP,int maxSSP,double samplingThreshold,Color background,int threads){
         this.world=world;
         this.light=light;
         this.ray=ray;
@@ -41,10 +41,11 @@ public class Camera{
         halfWidth=(this.width=width)>>1;
         halfHeight=(this.height=height)>>1;
         this.maxDepth=maxDepth;
-        iSPP=1.0/(this.samplesPerPixel=samplesPerPixel);
+        this.minSSP=minSSP;
+        this.maxSSP=maxSSP;
+        this.samplingThreshold=samplingThreshold;
         this.background=background;
-        this.threads=threads;
-        threadPool=new ThreadPoolExecutor(threads,threads,Long.MAX_VALUE,TimeUnit.DAYS,new ArrayBlockingQueue<>(threads));
+        threadPool=(this.threads=threads)>1?new ThreadPoolExecutor(threads,threads,0,TimeUnit.SECONDS,new ArrayBlockingQueue<>(threads)):null;
     }
     public Color render(Ray ray,int depth){
         if(depth>maxDepth)
@@ -64,9 +65,17 @@ public class Camera{
     }
     public Color render(int x,int y){
         Color s=Color.BLACK;
-        for(int i=0;i<samplesPerPixel;++i)
-            s=s.mix(render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1).normalize().scale(iSPP));
-        return s;
+        int n=0;
+        for(;n<maxSSP;++n){
+            Color c=render(new Ray(ray.origin,(ray.direction.add(upDir.mul((halfHeight-y+Interval.UNIT_RANGE.random()))).add(rightDir.mul(x-halfWidth+Interval.UNIT_RANGE.random()))).unit()),1).normalize();
+            if(n>=minSSP){
+                Color r=s.div(n);
+                if(r.diff(c)<samplingThreshold)
+                    return r;
+            }
+            s=s.mix(c);
+        }
+        return s.div(n);
     }
     private class Worker implements Runnable{
         private final BufferedImage img;
@@ -112,15 +121,20 @@ public class Camera{
         frame.add(progressBar);
         frame.setVisible(true);
         Progress progress=new Progress(progressBar);
-        for(int i=0;i<threads;++i)
-            threadPool.execute(new Worker(image,progress));
-        threadPool.shutdown();
-        try{
-            if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS))
-                return image;
-        }catch(InterruptedException e){
-            logger.log(Level.ERROR,"Rendering interrupted.",e);
+        if(threadPool!=null){
+            for(int i=0;i<threads;++i)
+                threadPool.execute(new Worker(image,progress));
+            threadPool.shutdown();
+            try{
+                if(threadPool.awaitTermination(Integer.MAX_VALUE,TimeUnit.DAYS))
+                    return image;
+            }catch(InterruptedException e){
+                logger.log(Level.ERROR,"Rendering interrupted.",e);
+            }
+            return null;
+        }else{
+            new Worker(image,progress).run();
+            return image;
         }
-        return null;
     }
 }
