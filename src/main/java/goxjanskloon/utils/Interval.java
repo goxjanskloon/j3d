@@ -6,6 +6,11 @@ public class Interval{
         this.min=min;
         this.max=max;
     }
+    public static Interval of(double a,double b){
+        if(a<b)
+            return new Interval(a,b);
+        else return new Interval(b,a);
+    }
     public double length(){
         return max-min;
     }
@@ -31,9 +36,9 @@ public class Interval{
         return new Interval(min+a,max+a);
     }
     public Interval padToMinimum(){
-        if(max-min>1e-3)
+        if(max-min>1e-2)
             return this;
-        var c=(min+max)/2;
-        return new Interval(c-5e-4,c+5e-4);
+        double c=(min+max)/2;
+        return new Interval(c-5e-3,c+5e-3);
     }
 }

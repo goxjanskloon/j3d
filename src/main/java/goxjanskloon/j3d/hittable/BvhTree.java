@@ -1,5 +1,6 @@
 package goxjanskloon.j3d.hittable;
 import goxjanskloon.j3d.Aabb;
+import goxjanskloon.j3d.Dimension;
 import goxjanskloon.j3d.Ray;
 import goxjanskloon.j3d.Vector;
 import goxjanskloon.utils.Interval;
@@ -20,12 +21,12 @@ public class BvhTree implements Hittable{
         else if(objects.size()==2){
             aabb=(left=objects.getFirst()).getAabb().unite((right=objects.getLast()).getAabb());
         }else{
-            var tb=Aabb.empty;
-            for(Hittable obj: objects)
-                tb=tb.unite(obj.getAabb());
-            var d=(aabb=tb).getLongestAxis();
+            Aabb t=Aabb.empty;
+            for(Hittable o:objects)
+                t=t.unite(o.getAabb());
+            Dimension d=(aabb=t).getLongestAxis();
             objects.sort((a,b)->a.getAabb().compareTo(b.getAabb(),d));
-            var mid=objects.size()>>1;
+            int mid=objects.size()>>1;
             left=new BvhTree(objects.subList(0,mid));
             right=new BvhTree(objects.subList(mid,objects.size()));
         }
@@ -38,7 +39,7 @@ public class BvhTree implements Hittable{
             return right.random(origin);
         if(right==null)
             return left.random(origin);
-        return MathHelper.nextDouble()<0.5?left.random(origin):right.random(origin);
+        return MathHelper.nextBoolean()?left.random(origin):right.random(origin);
     }
     @Override public double pdfValue(Ray ray){
         if(left==null)
@@ -48,8 +49,9 @@ public class BvhTree implements Hittable{
         return (left.pdfValue(ray)+right.pdfValue(ray))/2;
     }
     @Override public HitRecord hit(Ray ray,Interval interval){
-        var leftHit=left==null?null:left.hit(ray,interval);
-        var rightHit=right==null?null:right.hit(ray,interval);
+        if(left!=null&&right!=null&&!aabb.hit(ray,interval))
+            return null;
+        HitRecord leftHit=left==null?null:left.hit(ray,interval),rightHit=right==null?null:right.hit(ray,interval);
         if(leftHit==null)
             return rightHit;
         if(rightHit==null)

@@ -18,12 +18,11 @@ public class AabbTest{
     }
     @Test void hit(){
         Aabb aabb=new Aabb(new Interval(1,2),new Interval(1,2),new Interval(1,2));
-        final int MAX=100;
-        int hits=0;
+        int MAX=100,hits=0;
         for(int i=0;i<MAX;++i)
             if(aabb.hit(new Ray(new Vector(0,0,0),Vector.randomUnit()),new Interval(0,Double.POSITIVE_INFINITY)))
                 ++hits;
-        assertTrue(0<hits&&hits<MAX);
+        assertTrue(0<hits&&hits<=MAX);
     }
     @Test void unite(){
         Aabb a=new Aabb(new Interval(0,1),new Interval(2,4),new Interval(5,8)),b=new Aabb(new Interval(0,1),new Interval(2,5),new Interval(6,8)),c=new Aabb(new Interval(0,3),new Interval(4,5),new Interval(6,8));

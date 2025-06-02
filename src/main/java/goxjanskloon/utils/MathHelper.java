@@ -11,4 +11,10 @@ public interface MathHelper{
     static double nextDouble(Interval interval){
         return nextDouble(interval.min,interval.max);
     }
+    static int nextInt(int min,int max){
+        return ThreadLocalRandom.current().nextInt(min,max);
+    }
+    static boolean nextBoolean(){
+        return ThreadLocalRandom.current().nextBoolean();
+    }
 }

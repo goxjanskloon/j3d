@@ -31,11 +31,9 @@ public class Aabb{
         return Dimension.Z;
     }
     public boolean hit(Ray ray,Interval interval){
-        for(int i=0;i<=2;++i){
-            var d=Dimension.valueOf(i);
-            if((interval=interval.intersect(new Interval((get(d).min-ray.origin.get(d))/ray.direction.get(d),(get(d).max-ray.origin.get(d))/ray.direction.get(d)))).isEmpty())
+        for(Dimension d:Dimension.values())
+            if((interval=interval.intersect(Interval.of((get(d).min-ray.origin.get(d))/ray.direction.get(d),(get(d).max-ray.origin.get(d))/ray.direction.get(d)))).isEmpty())
                 return false;
-        }
         return true;
     }
     public Aabb unite(Aabb other){

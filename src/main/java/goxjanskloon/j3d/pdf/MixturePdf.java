@@ -11,8 +11,6 @@ public class MixturePdf implements Pdf{
         return (p1.valueOf(direction)+p2.valueOf(direction))/2;
     }
     @Override public Vector generate(){
-        if(MathHelper.nextDouble()<0.5)
-            return p1.generate();
-        else return p2.generate();
+        return MathHelper.nextBoolean()?p1.generate():p2.generate();
     }
 }
